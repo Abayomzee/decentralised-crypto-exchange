@@ -17,7 +17,7 @@ describe("Token", () => {
 
   beforeEach(async () => {
     const Token = await ethers.getContractFactory("Token");
-    token = await Token.deploy();
+    token = await Token.deploy(tokenName, tokenSymbol, "1000000");
   });
 
   it("has a correct name", async () => {
