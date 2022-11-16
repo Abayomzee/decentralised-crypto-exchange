@@ -10,11 +10,21 @@ contract Exchange {
     uint256 public orderCount;
     mapping(address => mapping(address => uint256)) public tokens;
     mapping(uint256 => _Order) public orders;
+    mapping(uint256 => bool) public orderCancelled;
 
     // Events
     event Deposit(address token, address user, uint256 amount, uint256 balance);
     event Withdraw(address token, address user, uint256 amount, uint256 balance);
     event Order(
+        uint256 id,
+        address user,
+        address tokenGet,
+        uint256 amountGet,
+        address tokenGive, 
+        uint256 amountGive,
+        uint256 timestamp
+        );
+    event Cancel(
         uint256 id,
         address user,
         address tokenGet,
@@ -73,15 +83,19 @@ contract Exchange {
 
     // -------------------
     // Make & Cancel Order
-    /**
-    Token Give (the token to be sold)
-    Token Get (the token to be bought)
-     */
     function makeOrder(address _tokenGet, uint256 _amountGet, address _tokenGive, uint256 _amountGive) public {
         require(tokens[_tokenGive][msg.sender] >= _amountGive);
        orderCount = orderCount + 1;
        orders[orderCount] =  _Order(1, msg.sender,_tokenGet, _amountGet, _tokenGive, _amountGive, block.timestamp); 
        emit Order(orderCount, msg.sender, _tokenGet, _amountGet, _tokenGive, _amountGive, block.timestamp);
+    }
+
+    function cancelOrder(uint256 _id) public {        
+        _Order storage _order = orders[_id];
+        require(address(_order.user) == msg.sender);
+        require(_order.id == _id);
+        orderCancelled[_id] = true;
+        emit Cancel(_id, msg.sender, _order.tokenGet, _order.amountGet, _order.tokenGive, _order.amountGive, block.timestamp);
     }
 
 }
