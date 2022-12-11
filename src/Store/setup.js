@@ -15,10 +15,14 @@ const useSetup = create(
       balance: "",
     },
     tokens: {
+      loaded: false,
       contracts: [],
       symbols: [],
     },
-    exchange: null,
+    exchange: {
+      loaded: false,
+      contract: null,
+    },
 
     // Methods
     loadProvider: () => {
@@ -82,18 +86,23 @@ const useSetup = create(
       symbol = await token.symbol();
       tokens.contracts[1] = token;
       tokens.symbols[1] = symbol;
+
+      tokens.loaded = true;
       set({ tokens }, false, "Token_2_Loaded");
 
       return token;
     },
     loadExchange: async () => {
-      let exchange;
+      const exchange = { ...get().exchange };
 
-      exchange = new ethers.Contract(
+      let exchangeContract = new ethers.Contract(
         addresses.exchange,
         ExchangeAbi,
         get().provider.connection
       );
+
+      exchange.contract = exchangeContract;
+      exchange.loaded = true;
       set({ exchange }, false, "Exchange_Loaded");
 
       return exchange;
