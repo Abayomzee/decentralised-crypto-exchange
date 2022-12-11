@@ -1,0 +1,36 @@
+:root {
+  /* Colors */
+  --color-white: #ffffff;
+  --color-black: #000000;
+
+  --color-primary: #005555;
+  --color-secondary: #4ba8a8;
+  --color-bg: #f3f4f8;
+
+  --color-1: #fbfaff;
+  --color-2: #f3f7fa;
+  --color-3: #8c97a8;
+  --color-4: #5f6388;
+  --color-5: #1e1e1e;
+  --color-6: #e8edf1;
+  --color-7: #299702;
+  --color-8: #f8b400;
+  --color-9: #738383;
+  --color-10: #c8ccd7;
+  --color-11: #e3e8ee;
+  --color-12: #768396;
+
+  /* widths */
+  --max-row-width: 140rem;
+  --max-row-width-extended: 164rem;
+  --center-extended-side-padding: 12rem;
+
+  /* Breakpoints */
+  --xlg: 112.5em; /* 1800px  Big desktop */
+  --lg: 78.125em; /* 1250px --> Tablet landscape */
+  --md: 66.6em; /* 1065px --> Tablet landscape medium size */
+  --xmd: 65.31em; /* 1045px --> Tablet landscape small size */
+  --sm: 56.25em; /* 900px --> Tablet portrait */
+  --xsm: 37.5em; /* 600px --> Phone */
+  --xxsm: 28.75em; /* 460px --> Small Phone */
+}
