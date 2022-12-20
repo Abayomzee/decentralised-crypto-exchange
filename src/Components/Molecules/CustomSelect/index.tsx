@@ -58,6 +58,15 @@ const CustomSelect: React.FC<Props> = (props) => {
               <DropdownItem
                 key={option.id}
                 onClick={() => onOptionChange!(option)}
+                variants={{
+                  visible: {
+                    opacity: 1,
+                    y: 0,
+                    transition: { duration: 0.1 },
+                  },
+                  hidden: { opacity: 0, y: 20 },
+                }}
+                exit={{ opacity: 0, y: 20, transition: { duration: 0.06 } }}
               >
                 {option.icon}
                 <Typography

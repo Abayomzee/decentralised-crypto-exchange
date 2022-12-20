@@ -28,6 +28,8 @@ export const Dropdown = styled(motion.div)`
   /* gap: .3rem; */
 `;
 
+export const DropdownItemWrapper = styled(motion.div)``;
+
 export const DropdownItem = styled(motion.button)`
   padding: 0.6rem 1.5rem;
   ${FlexRowAiCenter};
