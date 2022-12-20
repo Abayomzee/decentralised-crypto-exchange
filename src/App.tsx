@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import Dashboard from "Components/Pages/Dashboard";
 import useSetup from "./Store/setup";
 
 function App() {
@@ -12,7 +13,7 @@ function App() {
   }, []);
 
   // Data to render
-  return <div className="App"></div>;
+  return <Dashboard />;
 }
 
 export default App;

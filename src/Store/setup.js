@@ -13,6 +13,7 @@ const useSetup = create(
       chainId: "",
       account: "",
       balance: "",
+      isLoading: false,
     },
     tokens: {
       loaded: false,
@@ -41,6 +42,10 @@ const useSetup = create(
     },
     loadAccount: async () => {
       const provider = { ...get().provider };
+      // Set Loader
+      provider.isLoading = true;
+      set({ provider }, false, "Account_Loading...");
+
       const accounts = await window.ethereum.request({
         method: "eth_requestAccounts",
       });
@@ -48,19 +53,19 @@ const useSetup = create(
       provider.account = account;
       set({ provider }, false, "Account_Loaded");
 
-      return account;
-    },
-    loadBalance: async () => {
-      const provider = { ...get().provider };
-
-      let connection = await get().provider.connection;
+      // Load Balance
+      let connection = await provider.connection;
       let balance = await connection.getBalance(provider.account);
       balance = ethers.utils.formatEther(balance);
       provider.balance = balance;
-
       set({ provider }, false, "Balance_Loaded");
-    },
 
+      // Set Loader
+      provider.isLoading = false;
+      set({ provider }, false, "Account_Loading_done");
+
+      return account;
+    },
     loadToken: async () => {
       const tokens = { ...get().tokens };
 
@@ -112,10 +117,10 @@ const useSetup = create(
       await get().loadProvider();
       // Fetch current network's chainId (e.g. hardhat: 31337, kovan: 42)
       await get().loadNetwork();
-      // Fetch current account from metamask
-      await get().loadAccount();
-      // Fetch balance of current account from metamask
-      await get().loadBalance();
+      // Fetch current account and balance from metamask
+      // await get().loadAccount();
+      // // Fetch balance of current account from metamask
+      // await get().loadBalance();
       // Load token smart contracts
       await get().loadToken();
       // Load exchange smart contracts
