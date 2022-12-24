@@ -33,10 +33,10 @@ const TopBar: React.FC<Props> = () => {
   // Variables
   const networkOptions = [
     {
-      value: "0",
+      value: "",
       label: "Select a network",
-      id: "0",
-      chainId: "0",
+      id: "",
+      chainId: "",
       icon: <></>,
     },
     {

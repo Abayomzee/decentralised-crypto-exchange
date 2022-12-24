@@ -69,6 +69,7 @@ const Markets: React.FC<Props> = () => {
     }
   };
 
+
   // Data to render
   return (
     <MarketSelector>

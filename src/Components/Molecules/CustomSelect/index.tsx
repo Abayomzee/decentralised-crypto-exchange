@@ -30,7 +30,14 @@ const CustomSelect: React.FC<Props> = (props) => {
   useOnClickOutside(dropdownRef, () => setShow(false));
 
   // Props
-  const { onOptionChange, value, options, dropdownwidth, label, hide } = props;
+  const {
+    onOptionChange,
+    value,
+    options,
+    dropdownwidth,
+    label,
+    hide = true,
+  } = props;
 
   // Methods
   const handleDropdownShow = (e: any) => {
@@ -42,7 +49,7 @@ const CustomSelect: React.FC<Props> = (props) => {
   return (
     <>
       {label && <Typography as="h4" className="heading-2 mb-10" text={label} />}
-      {!hide ? (
+      {hide ? (
         <Wrapper onClick={handleDropdownShow} dropdownwidth={dropdownwidth}>
           <Flex gap="1rem" flexRowJcBetweenAiCenter>
             <Typography as="p" className="paragraph-3" text={value} />
