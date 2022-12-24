@@ -66,14 +66,14 @@ const useSetup = create(
 
       return account;
     },
-    loadToken: async () => {
+    loadToken: async (addrress1, address2) => {
       const tokens = { ...get().tokens };
 
       let token, symbol;
 
       // Load Token 1
       token = new ethers.Contract(
-        addresses.Dapp,
+        addrress1,
         TokenAbi,
         get().provider.connection
       );
@@ -84,7 +84,7 @@ const useSetup = create(
 
       // Load Token 2
       token = new ethers.Contract(
-        addresses.mETH,
+        address2,
         TokenAbi,
         get().provider.connection
       );
@@ -122,7 +122,7 @@ const useSetup = create(
       // // Fetch balance of current account from metamask
       // await get().loadBalance();
       // Load token smart contracts
-      await get().loadToken();
+      await get().loadToken(addresses.Dapp, addresses.mETH);
       // Load exchange smart contracts
       await get().loadExchange();
     },

@@ -137,6 +137,9 @@ export const Utilities = css`
   .mb-10 {
     margin-bottom: 1rem;
   }
+  .mb-5 {
+    margin-bottom: .5rem;
+  }
   /* End of margin Bottoms */
 
   /* margin left */

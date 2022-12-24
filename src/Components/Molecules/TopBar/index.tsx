@@ -54,7 +54,6 @@ const TopBar: React.FC<Props> = () => {
       icon: <KovanNetwork />,
     },
   ];
-
   const configData = JSON.parse(JSON.stringify(config));
 
   // State
