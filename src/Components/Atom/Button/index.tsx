@@ -6,10 +6,12 @@ interface ButtonProps {
   className?: any;
   onClick?: () => void;
   disabled?: boolean;
+  value?: any;
+  type?: any;
 }
 const Button: React.FC<ButtonProps> = (props) => {
   // Props
-  const { className, children } = props;
+  const { className, children, value } = props;
 
   // Data to render
   return (
@@ -18,7 +20,7 @@ const Button: React.FC<ButtonProps> = (props) => {
       {...props}
       className={`btn ${className ? className : ""}`}
     >
-      {children}
+      {value || children}
     </Wrapper>
   );
 };

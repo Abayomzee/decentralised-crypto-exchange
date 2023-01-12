@@ -85,6 +85,9 @@ export const Utilities = css`
   .mt-10 {
     margin-top: 1rem;
   }
+  .mt-8 {
+    margin-top: 0.8rem;
+  }
   .mt-5 {
     margin-top: 0.5rem;
   }
@@ -137,8 +140,11 @@ export const Utilities = css`
   .mb-10 {
     margin-bottom: 1rem;
   }
+  .mb-8 {
+    margin-bottom: 0.8rem;
+  }
   .mb-5 {
-    margin-bottom: .5rem;
+    margin-bottom: 0.5rem;
   }
   /* End of margin Bottoms */
 

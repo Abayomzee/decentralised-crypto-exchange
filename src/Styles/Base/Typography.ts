@@ -22,6 +22,18 @@ export const Typography = css`
       line-height: 100%;
       color: var(--color-white);
     }
+    &-3 {
+      font-weight: 400;
+      font-size: 1.6rem;
+      line-height: 100%;
+      color: var(--color-white);
+    }
+    &-4 {
+      font-weight: 400;
+      font-size: 1.2rem;
+      line-height: 100%;
+      color: var(--color-white);
+    }
   }
 
   /* Paragraphs */

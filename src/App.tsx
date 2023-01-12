@@ -10,7 +10,7 @@ function App() {
   useEffect(() => {
     initSetUp();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, []);   
 
   // Data to render
   return <Dashboard />;

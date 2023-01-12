@@ -5,7 +5,7 @@ export const Wrapper = styled(motion.aside)`
   height: 100vh;
   overflow-y: auto;
   background-color: var(--color-1);
-  flex-basis: 30rem;
+  flex-basis: 40rem;
   padding: 3.5rem 1.5rem 2.5rem;
 `;
 

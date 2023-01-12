@@ -16,6 +16,7 @@
     "dotenv": "^16.0.0",
     "framer-motion": "^7.6.19",
     "hardhat-gas-reporter": "^1.0.9",
+    "immer": "^9.0.17",
     "lodash": "^4.17.21",
     "moment": "^2.29.1",
     "react": "^18.2.0",

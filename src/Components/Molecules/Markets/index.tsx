@@ -19,7 +19,7 @@ const Markets: React.FC<Props> = () => {
   const marketOptions = [
     {
       value: "",
-      label: "Select a network",
+      label: "Select market",
       id: "",
       chainId: "",
       icon: <></>,
