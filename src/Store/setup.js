@@ -4,8 +4,8 @@ import { devtools } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 //
 import { addresses } from "Utils/Constants";
-import TokenAbi from "Abis/Token.json";
 import ExchangeAbi from "Abis/Exchange.json";
+import TokenAbi from "Abis/Token.json";
 
 const useSetup = create(
   immer(
@@ -81,7 +81,7 @@ const useSetup = create(
         return account;
       },
       loadToken: async (addrress1, address2) => {
-        const tokens = { ...get().tokens };
+        // const tokens = { ...get().tokens };
 
         let token, symbol;
 
@@ -92,9 +92,19 @@ const useSetup = create(
           get().provider.connection
         );
         symbol = await token.symbol();
-        tokens.contracts[0] = token;
-        tokens.symbols[0] = symbol;
-        set({ tokens }, false, "Token_1_Loaded");
+        // tokens.contracts[0] = token;
+        // tokens.symbols[0] = symbol;
+
+        set(
+          (state) => {
+            state.tokens.contracts = [token];
+            state.tokens.symbols = [symbol];
+          },
+          false,
+          "Token_1_Loaded"
+        );
+
+        // set({ tokens }, false, "Token_1_Loaded");
 
         // Load Token 2
         token = new ethers.Contract(
@@ -103,11 +113,21 @@ const useSetup = create(
           get().provider.connection
         );
         symbol = await token.symbol();
-        tokens.contracts[1] = token;
-        tokens.symbols[1] = symbol;
+        // tokens.contracts[1] = token;
+        // tokens.symbols[1] = symbol;
 
-        tokens.loaded = true;
-        set({ tokens }, false, "Token_2_Loaded");
+        set(
+          (state) => {
+            state.tokens.contracts = [state.tokens.contracts[0], token];
+            state.tokens.symbols = [state.tokens.symbols[0], symbol];
+            state.tokens.loaded = true;
+          },
+          false,
+          "Token_2_Loaded"
+        );
+
+        // tokens.loaded = true;
+        // set({ tokens }, false, "Token_2_Loaded");
 
         return token;
       },

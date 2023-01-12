@@ -11,7 +11,7 @@ import {
 } from "./style";
 import { Input } from "Components/Atom/Inputs";
 import Button from "Components/Atom/Button";
-import { Dapp } from "Components/Atom/Svgs";
+import { Dapp, EthIcon } from "Components/Atom/Svgs";
 import useSetup from "Store/setup";
 
 // Types
@@ -21,7 +21,7 @@ const Balance: React.FC<Props> = () => {
   // States
   const [tab, setTab] = useState<string>("Deposit");
   const [token1Amount, setToken1Amount] = useState<string>("");
-  const [, setToken2Amount] = useState<string>("");
+  const [token2Amount, setToken2Amount] = useState<string>("");
 
   // Store
   const { tokens, exchange, transferTokens, loadBalances, provider } =
@@ -36,6 +36,8 @@ const Balance: React.FC<Props> = () => {
 
   // Methods
   const handleChange = (e: any, token: any) => {
+    console.log(e.target.value);
+
     if (token.address === tokenContracts[0].address) {
       setToken1Amount(e.target.value);
     }
@@ -46,9 +48,16 @@ const Balance: React.FC<Props> = () => {
 
   const handleDeposit = async (e: any, token: any) => {
     e.preventDefault();
+    console.log("1");
+
     if (token.address === tokenContracts[0].address && token1Amount) {
       await transferTokens(token, token1Amount);
       setToken1Amount("");
+    }
+    if (token.address === tokenContracts[1].address && token2Amount) {
+      console.log("2");
+      await transferTokens(token, token2Amount);
+      setToken2Amount("");
     }
   };
 
@@ -56,7 +65,7 @@ const Balance: React.FC<Props> = () => {
   useEffect(() => {
     if (account) loadBalances();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [transferInProgress, account]);
+  }, [transferInProgress, account, tokenContracts[0], tokenContracts[1]]);
 
   // Data to render
   return (
@@ -77,7 +86,7 @@ const Balance: React.FC<Props> = () => {
         </TabNavs>
       </Flex>
 
-      {/*  */}
+      {/* Token 1  */}
       <Section>
         {/*  */}
         <TokenDetails className="mt-20">
@@ -122,13 +131,58 @@ const Balance: React.FC<Props> = () => {
             type={"submit"}
             className="btn-bordered btn-full mt-20 btn-md"
           >
-            {" Deposit  >"}
+            {tab === "Deposit" ? " Deposit  >" : " Withdraw  >"}
           </Button>
         </form>
       </Section>
+
+      {/* Token 2 */}
       <Section>
-        <Input placeholder="0.0000" className="md" />
-        <Button className="btn-bordered btn-full mt-20 btn-md">{">"}</Button>
+        <TokenDetails className="mt-20">
+          <TokenDetail>
+            <Typography as="p" className="paragraph-3" text="Token" />
+            <Flex gap=".5rem" className="mt-8" flexRowAiCenter>
+              <EthIcon />
+              <Typography
+                as="p"
+                className="paragraph-1"
+                text={symbols.length ? symbols[1] : ""}
+              />
+            </Flex>
+          </TokenDetail>
+          <TokenDetail>
+            <Typography as="p" className="paragraph-3" text="Wallet" />
+            <Typography
+              as="p"
+              className="paragraph-1 mt-8"
+              text={tokenBalances.length ? tokenBalances[1] : "0.00"}
+            />
+          </TokenDetail>
+          <TokenDetail>
+            <Typography as="p" className="paragraph-3" text="Exchange" />
+            <Typography
+              as="p"
+              className="paragraph-1 mt-8"
+              text={exchangeBalances.length ? exchangeBalances[1] : "0.00"}
+            />
+          </TokenDetail>
+        </TokenDetails>
+        {/*  */}
+        <form onSubmit={(e) => handleDeposit(e, tokenContracts[1])}>
+          <Input
+            placeholder="0.0000"
+            label="Amount"
+            value={token2Amount}
+            onChange={(e) => handleChange(e, tokenContracts[1])}
+            className="md"
+          />
+          <Button
+            type={"submit"}
+            className="btn-bordered btn-full mt-20 btn-md"
+          >
+            {tab === "Deposit" ? " Deposit  >" : " Withdraw  >"}
+          </Button>
+        </form>
       </Section>
     </Wrapper>
   );
