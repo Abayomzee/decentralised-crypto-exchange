@@ -36,8 +36,6 @@ const Balance: React.FC<Props> = () => {
 
   // Methods
   const handleChange = (e: any, token: any) => {
-    console.log(e.target.value);
-
     if (token.address === tokenContracts[0].address) {
       setToken1Amount(e.target.value);
     }
@@ -48,15 +46,13 @@ const Balance: React.FC<Props> = () => {
 
   const handleDeposit = async (e: any, token: any) => {
     e.preventDefault();
-    console.log("1");
 
     if (token.address === tokenContracts[0].address && token1Amount) {
-      await transferTokens(token, token1Amount);
+      await transferTokens(token, token1Amount, tab);
       setToken1Amount("");
     }
     if (token.address === tokenContracts[1].address && token2Amount) {
-      console.log("2");
-      await transferTokens(token, token2Amount);
+      await transferTokens(token, token2Amount, tab);
       setToken2Amount("");
     }
   };

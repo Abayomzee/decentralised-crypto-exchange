@@ -233,7 +233,7 @@ const useSetup = create(
         // Subscribe to events
         await get().subscribeToEvents();
       },
-      transferTokens: async (token, amount) => {
+      transferTokens: async (token, amount, type) => {
         set(
           (state) => {
             state.exchange.transferInProgress = true;
@@ -250,35 +250,72 @@ const useSetup = create(
         const signer = await provider.getSigner();
         const amountToTransfer = ethers.utils.parseUnits(amount.toString(), 18);
 
-        try {
-          // Aprrove exchange to be able to spend token on users behalf
-          transaction = await token
-            .connect(signer)
-            .approve(exchange.address, amountToTransfer);
-          await transaction.wait();
+        if (type === "Deposit") {
+          try {
+            // Aprrove exchange to be able to spend token on users behalf
+            transaction = await token
+              .connect(signer)
+              .approve(exchange.address, amountToTransfer);
+            await transaction.wait();
 
-          // Aprrove exchange to be able to spend token on users behalf
-          transaction = await exchange
-            .connect(signer)
-            .depositToken(token.address, amountToTransfer);
-          await transaction.wait();
-        } catch (error) {
-          set(
-            (state) => {
-              state.exchange.transferInProgress = true;
-              state.exchange.transaction.isPending = true;
-              state.exchange.transaction.isSuccessful = false;
-              state.exchange.transaction.isError = true;
-            },
-            false,
-            "Transfer_request_failed"
-          );
+            // Transfer Token
+            transaction = await exchange
+              .connect(signer)
+              .depositToken(token.address, amountToTransfer);
+            await transaction.wait();
+          } catch (error) {
+            set(
+              (state) => {
+                state.exchange.transferInProgress = true;
+                state.exchange.transaction.isPending = true;
+                state.exchange.transaction.isSuccessful = false;
+                state.exchange.transaction.isError = true;
+              },
+              false,
+              "Transfer_request_failed"
+            );
+          }
+        }
+        if (type === "Withdraw") {
+          try {
+            // Withdraw Token
+            transaction = await exchange
+              .connect(signer)
+              .withdrawToken(token.address, amountToTransfer);
+            await transaction.wait();
+          } catch (error) {
+            set(
+              (state) => {
+                state.exchange.transferInProgress = true;
+                state.exchange.transaction.isPending = true;
+                state.exchange.transaction.isSuccessful = false;
+                state.exchange.transaction.isError = true;
+              },
+              false,
+              "Transfer_request_failed"
+            );
+          }
         }
       },
       subscribeToEvents: async () => {
         const exchange = get().exchange.contract;
 
+        // Listen to 'Deposit' events
         exchange.on("Deposit", (token, user, amount, balance, events) => {
+          set(
+            (state) => {
+              state.exchange.transferInProgress = false;
+              state.exchange.transaction.isPending = false;
+              state.exchange.transaction.isSuccessful = true;
+              state.exchange.events = [events, ...state.exchange.events];
+            },
+            false,
+            "Transfer_request_completed"
+          );
+        });
+
+        // Listen to 'Withdraw' events
+        exchange.on("Withdraw", (token, user, amount, balance, events) => {
           set(
             (state) => {
               state.exchange.transferInProgress = false;
