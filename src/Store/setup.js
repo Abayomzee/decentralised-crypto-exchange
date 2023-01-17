@@ -6,6 +6,7 @@ import { immer } from "zustand/middleware/immer";
 import { addresses } from "Utils/Constants";
 import ExchangeAbi from "Abis/Exchange.json";
 import TokenAbi from "Abis/Token.json";
+import { c } from "Utils/Helpers";
 
 const useSetup = create(
   immer(
@@ -34,6 +35,7 @@ const useSetup = create(
           isError: false,
         },
         events: [],
+        allOrders: [],
         transferInProgress: false,
       },
 
@@ -237,11 +239,12 @@ const useSetup = create(
         set(
           (state) => {
             state.exchange.transferInProgress = true;
+            state.exchange.transaction.transactionType = type;
             state.exchange.transaction.isPending = true;
             state.exchange.transaction.isSuccessful = false;
           },
           false,
-          "Transfer_request_started"
+          `${type}_request_started`
         );
         const provider = get().provider.connection;
         const exchange = get().exchange.contract;
@@ -250,7 +253,7 @@ const useSetup = create(
         const signer = await provider.getSigner();
         const amountToTransfer = ethers.utils.parseUnits(amount.toString(), 18);
 
-        if (type === "Deposit") {
+        if (type === "Deposit" && amount) {
           try {
             // Aprrove exchange to be able to spend token on users behalf
             transaction = await token
@@ -266,17 +269,19 @@ const useSetup = create(
           } catch (error) {
             set(
               (state) => {
-                state.exchange.transferInProgress = true;
-                state.exchange.transaction.isPending = true;
+                state.exchange.transferInProgress = false;
+                state.exchange.transaction.transactionType = type;
+                state.exchange.transaction.isPending = false;
                 state.exchange.transaction.isSuccessful = false;
                 state.exchange.transaction.isError = true;
               },
               false,
-              "Transfer_request_failed"
+              `${type}_request_failed`
             );
           }
         }
-        if (type === "Withdraw") {
+        if (type === "Withdraw" && amount) {
+          c({ amount });
           try {
             // Withdraw Token
             transaction = await exchange
@@ -286,13 +291,14 @@ const useSetup = create(
           } catch (error) {
             set(
               (state) => {
-                state.exchange.transferInProgress = true;
-                state.exchange.transaction.isPending = true;
+                state.exchange.transferInProgress = false;
+                state.exchange.transaction.transactionType = type;
+                state.exchange.transaction.isPending = false;
                 state.exchange.transaction.isSuccessful = false;
                 state.exchange.transaction.isError = true;
               },
               false,
-              "Transfer_request_failed"
+              `${type}_request_failed`
             );
           }
         }
@@ -300,33 +306,187 @@ const useSetup = create(
       subscribeToEvents: async () => {
         const exchange = get().exchange.contract;
 
+        // provider.once("block", () => {
         // Listen to 'Deposit' events
         exchange.on("Deposit", (token, user, amount, balance, events) => {
+          console.log({ depositEvent: events });
+
           set(
             (state) => {
               state.exchange.transferInProgress = false;
               state.exchange.transaction.isPending = false;
               state.exchange.transaction.isSuccessful = true;
-              state.exchange.events = [events, ...state.exchange.events];
+
+              // Add new events
+              let lastEvent = state.exchange.events[0]; // check for last event if available
+              if (!lastEvent) {
+                state.exchange.events = [events];
+              } else if (lastEvent.blockNumber !== events.blockNumber) {
+                state.exchange.events = [events, ...state.exchange.events];
+              }
             },
             false,
-            "Transfer_request_completed"
+            "Deposit_request_completed"
           );
         });
 
         // Listen to 'Withdraw' events
         exchange.on("Withdraw", (token, user, amount, balance, events) => {
+          console.log({ withdrawEvent: events });
+
           set(
             (state) => {
               state.exchange.transferInProgress = false;
               state.exchange.transaction.isPending = false;
               state.exchange.transaction.isSuccessful = true;
-              state.exchange.events = [events, ...state.exchange.events];
+
+              // Add new events
+              let lastEvent = state.exchange.events[0]; // check for last event if available
+              if (!lastEvent) {
+                state.exchange.events = [events];
+              } else if (lastEvent.blockNumber !== events.blockNumber) {
+                state.exchange.events = [events, ...state.exchange.events];
+              }
             },
             false,
-            "Transfer_request_completed"
+            "Withdraw_request_completed"
           );
         });
+
+        // Listen to 'Order' events
+        exchange.on(
+          "Order",
+          (
+            id,
+            user,
+            tokenGet,
+            amountGet,
+            tokenGive,
+            amountGive,
+            timestamp,
+            events
+          ) => {
+            const order = events.args;
+            console.log({ order, id: id.toString() });
+            set(
+              (state) => {
+                state.exchange.transferInProgress = false;
+                state.exchange.transaction.isPending = false;
+                state.exchange.transaction.isSuccessful = true;
+                // state.exchange.allOrders = [order, ...state.exchange.allOrders];
+
+                // Add new events
+                let lastEvent = state.exchange.events[0]; // check for last event if available
+                if (!lastEvent) {
+                  state.exchange.events = [events];
+                } else if (lastEvent.blockNumber !== events.blockNumber) {
+                  state.exchange.events = [events, ...state.exchange.events];
+                }
+
+                // Add new Order
+                let index = state.exchange.allOrders.findIndex(
+                  (order) => order.id.toString() === id.toString()
+                );
+                if (index === -1) {
+                  state.exchange.allOrders = [
+                    order,
+                    ...state.exchange.allOrders,
+                  ];
+                } else {
+                }
+              },
+              false,
+              "Order_request_completed"
+            );
+          }
+        );
+        // });
+      },
+      makeBuyOrder: async (amount, price) => {
+        set(
+          (state) => {
+            state.exchange.transferInProgress = true;
+            state.exchange.transaction.transactionType = "New Order";
+            state.exchange.transaction.isPending = true;
+            state.exchange.transaction.isSuccessful = false;
+          },
+          false,
+          "Order_request_started"
+        );
+        const provider = get().provider.connection;
+        const exchange = get().exchange.contract;
+        const tokens = get().tokens.contracts;
+
+        const tokenGet = tokens[0].address;
+        const amountGet = ethers.utils.parseUnits(amount.toString(), 18);
+        const tokenGive = tokens[1].address;
+        const amountGive = ethers.utils.parseUnits(
+          (amount * price).toString(),
+          18
+        );
+
+        let transaction;
+        try {
+          const signer = await provider.getSigner();
+          transaction = await exchange
+            .connect(signer)
+            .makeOrder(tokenGet, amountGet, tokenGive, amountGive);
+          await transaction.wait();
+        } catch (error) {
+          set(
+            (state) => {
+              state.exchange.transferInProgress = true;
+              state.exchange.transaction.isPending = false;
+              state.exchange.transaction.isSuccessful = false;
+              state.exchange.transaction.isError = true;
+            },
+            false,
+            "Order_request_failed"
+          );
+        }
+      },
+      makeSellOrder: async (amount, price) => {
+        set(
+          (state) => {
+            state.exchange.transferInProgress = true;
+            state.exchange.transaction.transactionType = "New Order";
+            state.exchange.transaction.isPending = true;
+            state.exchange.transaction.isSuccessful = false;
+          },
+          false,
+          "Order_request_started"
+        );
+        const provider = get().provider.connection;
+        const exchange = get().exchange.contract;
+        const tokens = get().tokens.contracts;
+
+        const tokenGive = tokens[0].address;
+        const amountGive = ethers.utils.parseUnits(amount.toString(), 18);
+        const tokenGet = tokens[1].address;
+        const amountGet = ethers.utils.parseUnits(
+          (amount * price).toString(),
+          18
+        );
+
+        let transaction;
+        try {
+          const signer = await provider.getSigner();
+          transaction = await exchange
+            .connect(signer)
+            .makeOrder(tokenGet, amountGet, tokenGive, amountGive);
+          await transaction.wait();
+        } catch (error) {
+          set(
+            (state) => {
+              state.exchange.transferInProgress = true;
+              state.exchange.transaction.isPending = false;
+              state.exchange.transaction.isSuccessful = false;
+              state.exchange.transaction.isError = true;
+            },
+            false,
+            "Order_request_failed"
+          );
+        }
       },
     }))
   )
