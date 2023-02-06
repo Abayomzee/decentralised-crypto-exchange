@@ -4,3 +4,4 @@ export { default as Localhost } from "./Localhost";
 export { default as KovanNetwork } from "./KovanNetwork";
 export { default as CaretDown } from "./CaretDown";
 export { default as Dapp } from "./Dapp";
+export { default as SortIcon } from "./SortIcon";

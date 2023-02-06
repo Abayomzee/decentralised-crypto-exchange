@@ -35,7 +35,7 @@ const useSetup = create(
           isError: false,
         },
         events: [],
-        allOrders: [],
+        allOrders: { loaded: false, data: [] },
         transferInProgress: false,
       },
 
@@ -219,22 +219,7 @@ const useSetup = create(
           "Token_2_exchange_balance_Loaded"
         );
       },
-      initSetUp: async () => {
-        // Connect Ethers to blockchain
-        await get().loadProvider();
-        // Fetch current network's chainId (e.g. hardhat: 31337, kovan: 42)
-        await get().loadNetwork();
-        // Fetch current account and balance from metamask
-        // await get().loadAccount();
-        // // Fetch balance of current account from metamask
-        // await get().loadBalance();
-        // Load token smart contracts
-        await get().loadToken(addresses.Dapp, addresses.mETH);
-        // Load exchange smart contracts
-        await get().loadExchange();
-        // Subscribe to events
-        await get().subscribeToEvents();
-      },
+
       transferTokens: async (token, amount, type) => {
         set(
           (state) => {
@@ -367,7 +352,6 @@ const useSetup = create(
             events
           ) => {
             const order = events.args;
-            console.log({ order, id: id.toString() });
             set(
               (state) => {
                 state.exchange.transferInProgress = false;
@@ -384,16 +368,23 @@ const useSetup = create(
                 }
 
                 // Add new Order
-                let index = state.exchange.allOrders.findIndex(
+                let index = state.exchange.allOrders.data.findIndex(
                   (order) => order.id.toString() === id.toString()
                 );
                 if (index === -1) {
-                  state.exchange.allOrders = [
+                  state.exchange.allOrders.data = [
                     order,
-                    ...state.exchange.allOrders,
+                    ...state.exchange.allOrders.data,
                   ];
+                  // state.exchange.allOrders.data = [
+                  //   order,
+                  //   ...state.exchange.allOrders.data,
+                  // ];
                 } else {
                 }
+
+                // Updated Order loaded status
+                state.exchange.allOrders.loaded = true;
               },
               false,
               "Order_request_completed"
@@ -487,6 +478,46 @@ const useSetup = create(
             "Order_request_failed"
           );
         }
+      },
+      loadAllOrders: async () => {
+        const provider = get().provider.connection;
+        const exchange = get().exchange.contract;
+        const block = await provider.getBlockNumber();
+        c({ block });
+
+        // Fetch all orders
+        const orderStream = await exchange.queryFilter("Order", 0, block);
+        const allOrders = orderStream.map((event) => event.args);
+        c({ orderStream, allOrders });
+
+        set(
+          (state) => {
+            state.exchange.transferInProgress = true;
+            state.exchange.transaction.isPending = false;
+            state.exchange.transaction.isSuccessful = false;
+            state.exchange.transaction.isError = true;
+          },
+          false,
+          "Order_request_failed"
+        );
+      },
+      initSetUp: async () => {
+        // Connect Ethers to blockchain
+        await get().loadProvider();
+        // Fetch current network's chainId (e.g. hardhat: 31337, kovan: 42)
+        await get().loadNetwork();
+        // Fetch current account and balance from metamask
+        // await get().loadAccount(); // comment back
+        // // Fetch balance of current account from metamask
+        // await get().loadBalance(); // Comment back
+        // Load token smart contracts
+        await get().loadToken(addresses.Dapp, addresses.mETH);
+        // Load exchange smart contracts
+        await get().loadExchange();
+        // Subscribe to events
+        await get().subscribeToEvents();
+        // Load events
+        await get().loadAllOrders();
       },
     }))
   )

@@ -34,6 +34,18 @@ export const Typography = css`
       line-height: 100%;
       color: var(--color-white);
     }
+    &-5 {
+      font-weight: 400;
+      font-size: 1.6rem;
+      line-height: 100%;
+      color: var(--color-white);
+    }
+    &-6 {
+      font-weight: 400;
+      font-size: 1.35rem;
+      line-height: 100%;
+      color: var(--color-white);
+    }
   }
 
   /* Paragraphs */
@@ -55,6 +67,13 @@ export const Typography = css`
       line-height: 100%;
       letter-spacing: 0.07rem;
       color: var(--color-5);
+    }
+    &-4 {
+      font-weight: 400;
+      font-size: 1.2rem;
+      line-height: 100%;
+      letter-spacing: 0.07rem;
+      color: var(--color-8);
     }
   }
 `;
