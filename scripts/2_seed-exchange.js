@@ -97,7 +97,7 @@ async function main() {
   console.log(`Made Order from ${user1.address}`);
 
   //   User1 cancels order
-  orderId = await result.events[0].args.id;
+  orderId = result.events[0].args.id;
   transaction = await exchange.connect(user1).cancelOrder(orderId);
   await transaction.wait();
   console.log(`Cancelled Order from ${user1.address}`);
@@ -119,7 +119,7 @@ async function main() {
   orderId = result.events[0].args.id;
   transaction = await exchange.connect(user2).fillOrder(orderId);
   await transaction.wait();
-  console.log(`Filled Order from ${user2.address}`);
+  console.log(`Filled Order from ${user2.address}`);;
 
   //   Wait 1 seconds
   await wait(1);
@@ -135,7 +135,7 @@ async function main() {
   orderId = result.events[0].args.id;
   transaction = await exchange.connect(user2).fillOrder(orderId);
   await transaction.wait();
-  console.log(`Filled Order from ${user2.address}`);
+  console.log(`Filled Order from ${user2.address}`);;
 
   //   Wait 1 seconds
   await wait(1);
@@ -151,7 +151,7 @@ async function main() {
   orderId = result.events[0].args.id;
   transaction = await exchange.connect(user2).fillOrder(orderId);
   await transaction.wait();
-  console.log(`Filled Order from ${user2.address}\n`);
+  console.log(`Filled Order from ${user2.address}\n`);;
 
   //   Wait 1 seconds
   await wait(1);
@@ -159,7 +159,7 @@ async function main() {
   //===========================
   // Seed a open Orders
 
-  //   User 1 makes 10 ordera
+  //   User 1 makes 10 orders
   for (let i = 1; i <= 10; i++) {
     transaction = await exchange
       .connect(user1)
@@ -171,11 +171,11 @@ async function main() {
     await wait(1);
   }
 
-  //   User 2 makes 10 ordera
+  //   User 2 makes 10 orders
   for (let i = 1; i <= 10; i++) {
     transaction = await exchange
       .connect(user2)
-      .makeOrder(mETH.address, tokens(10 * i), Dapp.address, tokens(10));
+      .makeOrder(Dapp.address, tokens(10), mETH.address, tokens(10 * i));
     await transaction.wait();
     console.log(`Made Order from ${user2.address}`);
 

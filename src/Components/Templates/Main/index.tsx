@@ -6,6 +6,7 @@ import Body from "Components/Organisms/Body";
 interface Props {}
 
 const Main: React.FC<Props> = () => {
+  // Data to render
   return (
     <Wrapper>
       <Aside />

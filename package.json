@@ -8,11 +8,11 @@
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
-    "@typechain/hardhat": "^6.1.4",
     "@types/jest": "^27.5.2",
     "@types/node": "^16.11.64",
     "@types/react": "^18.0.21",
     "@types/react-dom": "^18.0.6",
+    "apexcharts": "^3.37.0",
     "dotenv": "^16.0.0",
     "framer-motion": "^7.6.19",
     "hardhat-gas-reporter": "^1.0.9",
@@ -63,12 +63,15 @@
     "@nomicfoundation/hardhat-chai-matchers": "^1.0.4",
     "@nomicfoundation/hardhat-toolbox": "^2.0.0",
     "@nomiclabs/hardhat-ethers": "^2.0.5",
+    "@typechain/ethers-v5": "^10.2.0",
+    "@typechain/hardhat": "^6.1.5",
     "@types/lodash": "^4.14.191",
     "@types/react-blockies": "^1.4.1",
     "@types/styled-components": "^5.1.26",
     "chai": "^4.3.6",
     "ethers": "^5.5.4",
     "hardhat": "^2.12.1",
-    "ts-node": "^10.9.1"
+    "ts-node": "^10.9.1",
+    "typechain": "^8.1.1"
   }
 }

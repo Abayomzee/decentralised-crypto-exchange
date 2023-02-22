@@ -6,15 +6,16 @@ import "./style.css";
 
 interface Props {
   columns: Array<any>;
+  head?: Array<any>;
   data: Array<any>;
 }
 const Table: React.FC<Props> = (props) => {
-  const { data, columns } = props;
+  const { data, columns, head } = props;
   return (
     <div className="t-wrapper">
       <div className="table-div">
         <table className="table">
-          <TableHead columns={columns} />
+          <TableHead columns={head || columns} />
           <TableBody data={data} columns={columns} />
         </table>
       </div>

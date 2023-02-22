@@ -1,28 +1,16 @@
 import React from "react";
 import Table from "Components/Organisms/Table";
-import useSetup from "Store/setup";
 
 // Types
-interface Props {}
+interface Props {
+  head: string[];
+  data: any[];
+  columns: any[];
+}
 // Main component
-const SellingOrdersTable: React.FC<Props> = () => {
-  // Store
-  const { tokens } = useSetup();
-  const { symbols } = tokens;
-  const tokenOneSymbol = symbols[0];
-  const tokenTwoSymbol = symbols[1];
-
+const SellingOrdersTable: React.FC<Props> = (props) => {
   // Data to render
-  return (
-    <Table
-      data={[]}
-      columns={[
-        tokenOneSymbol,
-        `${tokenOneSymbol}/${tokenTwoSymbol}`,
-        tokenTwoSymbol,
-      ]}
-    />
-  );
+  return <Table {...props} />;
 };
 
 export default SellingOrdersTable;

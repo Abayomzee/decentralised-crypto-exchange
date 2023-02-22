@@ -3,7 +3,7 @@ import { FlexRow } from "Styles/Abstract/Mixins";
 
 export const Wrapper = styled.section`
   background-color: var(--color-1);
-  padding: 1.5rem;
+  padding: 2rem;
   border-radius: 0.5rem;
 `;
 

@@ -5,3 +5,5 @@ export { default as KovanNetwork } from "./KovanNetwork";
 export { default as CaretDown } from "./CaretDown";
 export { default as Dapp } from "./Dapp";
 export { default as SortIcon } from "./SortIcon";
+export { default as UpArrow } from "./UpArrow";
+export { default as DownArrow } from "./DownArrow";

@@ -2,11 +2,13 @@ import create from "zustand";
 import { ethers } from "ethers";
 import { devtools } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
+import moment from "moment";
+import _ from "lodash";
 //
 import { addresses } from "Utils/Constants";
 import ExchangeAbi from "Abis/Exchange.json";
 import TokenAbi from "Abis/Token.json";
-import { c } from "Utils/Helpers";
+import { buildGraphdata, c, formatOrders } from "Utils/Helpers";
 
 const useSetup = create(
   immer(
@@ -35,7 +37,31 @@ const useSetup = create(
           isError: false,
         },
         events: [],
-        allOrders: { loaded: false, data: [] },
+        allOrders: {
+          loaded: false,
+          data: [],
+          orderBook: {
+            loadingOrderBook: false,
+            data: { groupedOrders: [], buyOrders: [], sellOrders: [] },
+          },
+        },
+        openOrders: {
+          loaded: false,
+          data: { all: [], buyOrders: [], sellOrders: [] },
+        },
+        cancelledOrders: {
+          loaded: false,
+          data: { all: [], buyOrders: [], sellOrders: [] },
+        },
+        filledOrders: {
+          loaded: false,
+          data: { all: [], buyOrders: [], sellOrders: [] },
+        },
+        chartdata: {
+          lastPrice: 0,
+          lastPriceChangeStatus: 0,
+          series: [{ data: [] }],
+        },
         transferInProgress: false,
       },
 
@@ -266,7 +292,7 @@ const useSetup = create(
           }
         }
         if (type === "Withdraw" && amount) {
-          c({ amount });
+          // c({ amount });
           try {
             // Withdraw Token
             transaction = await exchange
@@ -317,8 +343,6 @@ const useSetup = create(
 
         // Listen to 'Withdraw' events
         exchange.on("Withdraw", (token, user, amount, balance, events) => {
-          console.log({ withdrawEvent: events });
-
           set(
             (state) => {
               state.exchange.transferInProgress = false;
@@ -483,23 +507,168 @@ const useSetup = create(
         const provider = get().provider.connection;
         const exchange = get().exchange.contract;
         const block = await provider.getBlockNumber();
-        c({ block });
 
         // Fetch all orders
         const orderStream = await exchange.queryFilter("Order", 0, block);
         const allOrders = orderStream.map((event) => event.args);
-        c({ orderStream, allOrders });
+        // Fetch all cancelled orders
+        const cancelStream = await exchange.queryFilter("Cancel", 0, block);
+        const cancelledOrders = cancelStream.map((event) => event.args);
+        // Fetch all filled orders
+        const filledStream = await exchange.queryFilter("Trade", 0, block);
+        const filledOrders = filledStream.map((event) => event.args);
 
         set(
           (state) => {
-            state.exchange.transferInProgress = true;
-            state.exchange.transaction.isPending = false;
-            state.exchange.transaction.isSuccessful = false;
-            state.exchange.transaction.isError = true;
+            state.exchange.allOrders.data = allOrders;
+            state.exchange.allOrders.loaded = true;
           },
           false,
-          "Order_request_failed"
+          "All_Orders_loaded"
         );
+        set(
+          (state) => {
+            state.exchange.cancelledOrders.data.all = cancelledOrders;
+            state.exchange.cancelledOrders.loaded = true;
+          },
+          false,
+          "Canclled_Orders_loaded"
+        );
+        set(
+          (state) => {
+            state.exchange.filledOrders.data.all = filledOrders;
+            state.exchange.filledOrders.loaded = true;
+          },
+          false,
+          "Filled_Orders_loaded"
+        );
+      },
+      orderBookSelector: async () => {
+        // Filter orders by seleted tokens
+        const tokens = get().tokens.contracts;
+        const stateOrders = get().exchange.allOrders.data;
+        let orders = [...stateOrders];
+
+        // Check if tokens are available
+        if (!tokens[0] || !tokens[1]) return;
+
+        // Filter out orders that are perculier to the current selected tokens in the exchange
+        orders.filter(
+          (order) =>
+            order.tokenGet === tokens[0].address ||
+            order.tokenGet === tokens[1].address
+        );
+        orders.filter(
+          (order) =>
+            order.tokenGive === tokens[0].address ||
+            order.tokenGive === tokens[1].address
+        );
+
+        // Modify all orders by adding new useful data
+        let formattedOrders = formatOrders(orders, tokens);
+
+        // Group all orders by order type
+        const groupedOrders = _.groupBy(formattedOrders, "orderType");
+
+        // Fetch all buy and sell orders
+        let buyOrders = _.get(groupedOrders, "buy", []);
+        let sellOrders = _.get(groupedOrders, "sell", []);
+
+        // Sort all buy and sell orders based on orderPrice
+        buyOrders = buyOrders.sort((a, b) => b.tokenPrice - a.tokenPrice);
+        sellOrders = sellOrders.sort((a, b) => b.tokenPrice - a.tokenPrice);
+        //
+
+        // Get open orders *****************/
+        const filledOrders = get().exchange.filledOrders.data.all;
+        const cancelledOrders = get().exchange.cancelledOrders.data.all;
+
+        const openOrders = _.reject(formattedOrders, (order) => {
+          let orderFilled = filledOrders.some((o) => {
+            return o.id.toString() === order.id.toString();
+          });
+          let orderCancelled = cancelledOrders.some((o) => {
+            return o.id.toString() === order.id.toString();
+          });
+
+          return orderFilled || orderCancelled;
+        });
+
+        const groupedOpenOrders = _.groupBy(openOrders, "orderType");
+        let openBuyOrders = _.get(groupedOpenOrders, "buy", []);
+        let openSellOrders = _.get(groupedOpenOrders, "sell", []);
+        openBuyOrders = openBuyOrders.sort(
+          (a, b) => b.tokenPrice - a.tokenPrice
+        );
+        openSellOrders = openSellOrders.sort(
+          (a, b) => b.tokenPrice - a.tokenPrice
+        );
+        // Get open orders *****************/
+
+        // Update store
+        set(
+          (state) => {
+            state.exchange.allOrders.orderBook.data = {
+              groupedOrders,
+              buyOrders,
+              sellOrders,
+            };
+
+            state.exchange.openOrders.data.all = openOrders;
+            state.exchange.openOrders.data.buyOrders = openBuyOrders;
+            state.exchange.openOrders.data.sellOrders = openSellOrders;
+          },
+          false,
+          "Loaded_OrderBook_slector"
+        );
+      },
+      priceChartSelector: async () => {
+        // Filter orders by seleted tokens
+        const filledOrders = get().exchange.filledOrders.data.all;
+        let orders = [...filledOrders];
+        const tokens = get().tokens.contracts;
+
+        // Check if tokens are available
+        if (!tokens[0] || !tokens[1]) return;
+
+        // Filter out orders that are perculier to the current selected tokens in the exchange
+        orders.filter(
+          (order) =>
+            order.tokenGet === tokens[0].address ||
+            order.tokenGet === tokens[1].address
+        );
+        orders.filter(
+          (order) =>
+            order.tokenGive === tokens[0].address ||
+            order.tokenGive === tokens[1].address
+        );
+
+        // Sort orders by date (ascending) to compare history
+        orders = orders.sort((a, b) => a.timestamp - b.timestamp);
+
+        // Modify all orders by adding new useful data
+        let formattedOrders = formatOrders(orders, tokens);
+        const lastOrder = formattedOrders.at(-1);
+        const secondLastOrder = formattedOrders.at(-2);
+        const lastPrice = _.get(lastOrder, "tokenPrice", 0);
+        const secondLastPrice = _.get(secondLastOrder, "tokenPrice", 0);
+        const lastPriceChangeStatus = lastPrice >= secondLastPrice ? "+" : "-";
+
+        c({
+          series: [
+            {
+              data: buildGraphdata(formattedOrders),
+            },
+          ],
+        });
+
+        set((state) => {
+          state.exchange.chartdata.series[0].data =
+            buildGraphdata(formattedOrders);
+          state.exchange.chartdata.lastPrice = lastPrice;
+          state.exchange.chartdata.lastPriceChangeStatus =
+            lastPriceChangeStatus;
+        });
       },
       initSetUp: async () => {
         // Connect Ethers to blockchain
@@ -518,6 +687,10 @@ const useSetup = create(
         await get().subscribeToEvents();
         // Load events
         await get().loadAllOrders();
+        // Load order book
+        await get().orderBookSelector();
+        // Load price chart
+        await get().priceChartSelector();
       },
     }))
   )

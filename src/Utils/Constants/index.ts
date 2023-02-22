@@ -9,3 +9,7 @@ export const addresses = {
   mETH: config[chainId].mETH.address,
 };
 
+export const orderTypeColors = {
+  sellColor: "#F45353",
+  buyColor: "#25CE85",
+};

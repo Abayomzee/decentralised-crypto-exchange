@@ -27,7 +27,15 @@ const TableBody: React.FC<Props> = (props) => {
         return (
           <tr key={item.id} className="table-row">
             {columns.map((column: columnProps) => (
-              <td className="table-body" key={createKey(item, column)}>
+              <td
+                className="table-body"
+                style={{
+                  ...(column.label === "tokenPrice" && {
+                    color: `${item.orderTypeClass}`,
+                  }),
+                }}
+                key={createKey(item, column)}
+              >
                 {renderCell(item, column)}
               </td>
             ))}

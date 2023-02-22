@@ -324,4 +324,12 @@ export const Utilities = css`
   .hide-on-mobile {
     ${responsive("sm", `display: none`)}
   }
+  .apexcharts-tooltip {
+    background: #000000;
+    color: #ffffff;
+    font-weight: normal
+  }
+  .apexcharts-tooltip * {
+    font-weight: 400
+  }
 `;

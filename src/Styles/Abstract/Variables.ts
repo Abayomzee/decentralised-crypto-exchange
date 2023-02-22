@@ -22,9 +22,9 @@ export const Variables = css`
     --color-7: #ababab17;
     --color-8: #707070;
     --color-9: #161e66;
+    --color-10: #25ce85;
+    --color-11: #f45353;
     /*  */
-    --color-10: #5c4fff;
-    --color-11: #a8a8a8;
     --color-12: #787f85;
     --color-13: #0d1b28;
     --color-14: #949494;

@@ -2,6 +2,8 @@ import styled from "styled-components";
 import { motion } from "framer-motion";
 
 export const Wrapper = styled(motion.aside)`
+  position: sticky;
+  top: 0;
   height: 100vh;
   overflow-y: auto;
   background-color: var(--color-1);

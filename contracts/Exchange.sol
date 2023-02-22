@@ -95,8 +95,8 @@ contract Exchange {
     // Make & Cancel Order
     function makeOrder(address _tokenGet, uint256 _amountGet, address _tokenGive, uint256 _amountGive) public {
         require(tokens[_tokenGive][msg.sender] >= _amountGive);
-       orderCount = orderCount + 1;
-       orders[orderCount] =  _Order(1, msg.sender,_tokenGet, _amountGet, _tokenGive, _amountGive, block.timestamp); 
+       orderCount ++;
+       orders[orderCount] =  _Order(orderCount, msg.sender,_tokenGet, _amountGet, _tokenGive, _amountGive, block.timestamp); 
        emit Order(orderCount, msg.sender, _tokenGet, _amountGet, _tokenGive, _amountGive, block.timestamp);
     }
 

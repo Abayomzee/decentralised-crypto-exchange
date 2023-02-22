@@ -35,7 +35,7 @@ export const Typography = css`
       color: var(--color-white);
     }
     &-5 {
-      font-weight: 400;
+      font-weight: 500;
       font-size: 1.6rem;
       line-height: 100%;
       color: var(--color-white);

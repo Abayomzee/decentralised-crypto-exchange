@@ -108,7 +108,7 @@ const TopBar: React.FC<Props> = () => {
 
   // Data to render
   return (
-    <Wrapper>
+    <Wrapper className="mb-80">
       <NetworkSelector>
         <EthIcon />
         {chainId && (
