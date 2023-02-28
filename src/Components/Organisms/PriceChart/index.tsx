@@ -6,6 +6,7 @@ import useSetup from "Store/setup";
 import { options } from "./config";
 import { Flex } from "Styles/layouts/Flex";
 import { DownArrow, UpArrow } from "Components/Atom/Svgs";
+import EmptyState from "Components/Atom/EmptyState";
 
 // Types
 interface Props {}
@@ -22,21 +23,17 @@ const PriceChart: React.FC<Props> = () => {
   // Data to render
   return (
     <Wrapper className="mb-30">
+      <Flex className="mb-30" gap="1.5rem" flexRowAiCenter>
+        <Typography
+          as="h6"
+          className="heading-5"
+          text={`${symbols[0]}/${symbols[1]}`}
+        />
+        {lastPriceChangeStatus === "+" ? <UpArrow /> : <DownArrow />}
+        <Typography as="span" className="paragraph-1" text={lastPrice} />
+      </Flex>
       {account ? (
         <>
-          <Flex className="mb-30" gap="1.5rem" flexRowAiCenter>
-            <Typography
-              as="h6"
-              className="heading-5"
-              text={`${symbols[0]}/${symbols[1]}`}
-            />
-            {lastPriceChangeStatus === "+" ? <UpArrow /> : <DownArrow />}
-            <Typography
-              as="span"
-              className="paragraph-1"
-              text={lastPrice}
-            />
-          </Flex>
           <Chart
             type="candlestick"
             width="100%"
@@ -46,13 +43,7 @@ const PriceChart: React.FC<Props> = () => {
           />
         </>
       ) : (
-        <NoAccountConnected>
-          <Typography
-            as="h6"
-            className="heading-5"
-            text="Please connect to metamask"
-          />
-        </NoAccountConnected>
+        <EmptyState space="13rem" text="Please connect to metamask" />
       )}
     </Wrapper>
   );

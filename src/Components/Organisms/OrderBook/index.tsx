@@ -43,6 +43,8 @@ const OrderBook: React.FC<Props> = () => {
             head={tableHead}
             data={sellOrders}
             columns={tableColumns}
+            columnWithColor="tokenPrice"
+            columnColorPropName="orderTypeClass"
           />
         </OrderTypeCard>
         <OrderTypeCard>
@@ -51,6 +53,8 @@ const OrderBook: React.FC<Props> = () => {
             head={tableHead}
             data={buyOrders}
             columns={tableColumns}
+            columnWithColor="tokenPrice"
+            columnColorPropName="orderTypeClass"
           />
         </OrderTypeCard>
       </OrderTypesWrapper>

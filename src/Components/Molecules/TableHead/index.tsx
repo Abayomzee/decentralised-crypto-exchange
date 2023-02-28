@@ -1,11 +1,7 @@
 import { SortIcon } from "Components/Atom/Svgs";
 import Typography from "Components/Atom/Typography";
 import React from "react";
-
-// interface columnProps {
-//   label: string;
-//   id: string;
-// }
+ 
 interface Props {
   columns?: object[];
 }

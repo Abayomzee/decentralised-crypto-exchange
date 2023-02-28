@@ -6,6 +6,8 @@ interface Props {
   head: string[];
   data: any[];
   columns: any[];
+  columnWithColor?: string;
+  columnColorPropName?: string;
 }
 // Main component
 const SellingOrdersTable: React.FC<Props> = (props) => {

@@ -1,4 +1,4 @@
-export const options = {
+export const options: any = {
   chart: {
     animations: { enabled: true },
     toolbar: { show: false },

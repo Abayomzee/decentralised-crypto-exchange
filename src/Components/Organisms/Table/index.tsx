@@ -8,6 +8,8 @@ interface Props {
   columns: Array<any>;
   head?: Array<any>;
   data: Array<any>;
+  columnWithColor?: string;
+  columnColorPropName?: string;
 }
 const Table: React.FC<Props> = (props) => {
   const { data, columns, head } = props;
@@ -16,7 +18,7 @@ const Table: React.FC<Props> = (props) => {
       <div className="table-div">
         <table className="table">
           <TableHead columns={head || columns} />
-          <TableBody data={data} columns={columns} />
+          <TableBody {...props} data={data} columns={columns}  />
         </table>
       </div>
     </div>

@@ -9,9 +9,10 @@ interface Props {
   columnWithColor?: string;
   columnColorPropName?: string;
 }
-const BuyingOrdersTable: React.FC<Props> = (props) => {
+// Main component
+const TradesTable: React.FC<Props> = (props) => {
   // Data to render
   return <Table {...props} />;
 };
 
-export default BuyingOrdersTable;
+export default TradesTable;

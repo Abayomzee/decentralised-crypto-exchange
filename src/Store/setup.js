@@ -2,10 +2,9 @@ import create from "zustand";
 import { ethers } from "ethers";
 import { devtools } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
-import moment from "moment";
 import _ from "lodash";
 //
-import { addresses } from "Utils/Constants";
+import { addresses, orderTypeColors } from "Utils/Constants";
 import ExchangeAbi from "Abis/Exchange.json";
 import TokenAbi from "Abis/Token.json";
 import { buildGraphdata, c, formatOrders } from "Utils/Helpers";
@@ -61,6 +60,10 @@ const useSetup = create(
           lastPrice: 0,
           lastPriceChangeStatus: 0,
           series: [{ data: [] }],
+        },
+        trades: {
+          loaded: false,
+          data: [],
         },
         transferInProgress: false,
       },
@@ -654,20 +657,69 @@ const useSetup = create(
         const secondLastPrice = _.get(secondLastOrder, "tokenPrice", 0);
         const lastPriceChangeStatus = lastPrice >= secondLastPrice ? "+" : "-";
 
-        c({
-          series: [
-            {
-              data: buildGraphdata(formattedOrders),
-            },
-          ],
-        });
-
         set((state) => {
           state.exchange.chartdata.series[0].data =
             buildGraphdata(formattedOrders);
           state.exchange.chartdata.lastPrice = lastPrice;
           state.exchange.chartdata.lastPriceChangeStatus =
             lastPriceChangeStatus;
+        });
+      },
+      tradesSelector: async () => {
+        // Filter orders by seleted tokens
+        const filledOrders = get().exchange.filledOrders.data.all;
+        let orders = [...filledOrders];
+        const tokens = get().tokens.contracts;
+
+        // Check if tokens are available
+        if (!tokens[0] || !tokens[1]) return;
+
+        // Filter out orders that are perculier to the current selected tokens in the exchange
+        orders.filter(
+          (order) =>
+            order.tokenGet === tokens[0].address ||
+            order.tokenGet === tokens[1].address
+        );
+        orders.filter(
+          (order) =>
+            order.tokenGive === tokens[0].address ||
+            order.tokenGive === tokens[1].address
+        );
+
+        // Sort orders by date (ascending) to compare history
+        orders = orders.sort((a, b) => a.timestamp - b.timestamp);
+
+        // Modify all orders by adding new useful data
+        let formattedOrders = formatOrders(orders, tokens);
+
+        orders = formattedOrders.map((order) => {
+          let previousOrder = formattedOrders[0];
+
+          const isUp =
+            previousOrder.id === order.id
+              ? true
+              : previousOrder.tokenPrice < order.tokenPrice
+              ? true
+              : false;
+
+          previousOrder = order;
+
+          return {
+            ...order,
+            orderTradeTypeClass: isUp
+              ? orderTypeColors.buyColor
+              : orderTypeColors.sellColor,
+          };
+        });
+
+        // Sort orders by date (descending) to compare history
+        orders = orders.sort((a, b) => b.timestamp - a.timestamp);
+
+        console.log({ Trades: orders });
+
+        set((state) => {
+          state.exchange.trades.data = orders;
+          state.exchange.trades.loaded = true;
         });
       },
       initSetUp: async () => {
@@ -691,6 +743,8 @@ const useSetup = create(
         await get().orderBookSelector();
         // Load price chart
         await get().priceChartSelector();
+        // Load trades
+        await get().tradesSelector();
       },
     }))
   )

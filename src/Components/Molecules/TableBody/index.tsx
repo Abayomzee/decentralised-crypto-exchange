@@ -8,9 +8,11 @@ interface columnProps {
 interface Props {
   columns?: any;
   data?: any;
+  columnWithColor?: any;
+  columnColorPropName?: any;
 }
 const TableBody: React.FC<Props> = (props) => {
-  const { columns, data } = props;
+  const { columns, data, columnWithColor, columnColorPropName } = props;
 
   const renderCell = (item: any, column: any) => {
     if (column.content) return column.content(item);
@@ -30,8 +32,8 @@ const TableBody: React.FC<Props> = (props) => {
               <td
                 className="table-body"
                 style={{
-                  ...(column.label === "tokenPrice" && {
-                    color: `${item.orderTypeClass}`,
+                  ...(column.label === columnWithColor && {
+                    color: `${item[columnColorPropName]}`,
                   }),
                 }}
                 key={createKey(item, column)}
