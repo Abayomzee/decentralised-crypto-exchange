@@ -1,5 +1,6 @@
-import Trades from "Components/Organisms/Trades";
 import React from "react";
+import MyTransactions from "Components/Organisms/MyTransactions";
+import Trades from "Components/Organisms/Trades";
 import { Wrapper } from "./style";
 
 interface Props {}
@@ -7,8 +8,8 @@ interface Props {}
 const TradesNTransaction: React.FC<Props> = () => {
   // Data to render
   return (
-    <Wrapper>
-      <div></div>
+    <Wrapper className="mb-30">
+      <MyTransactions />
       <Trades />
     </Wrapper>
   );

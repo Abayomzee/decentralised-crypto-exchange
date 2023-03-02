@@ -268,7 +268,8 @@ export const Utilities = css`
   }
   .max-width-550 {
     max-width: 55rem;
-  }  .max-width-510 {
+  }
+  .max-width-510 {
     max-width: 51rem;
   }
   .max-width-480 {
@@ -326,9 +327,14 @@ export const Utilities = css`
   .apexcharts-tooltip {
     background: #000000;
     color: #ffffff;
-    font-weight: normal
+    font-weight: normal;
   }
   .apexcharts-tooltip * {
-    font-weight: 400
+    font-weight: 400;
+  }
+
+  .position-sticky-top-0 {
+    position: sticky;
+    top: 0;
   }
 `;

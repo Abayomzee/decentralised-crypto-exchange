@@ -65,6 +65,14 @@ const useSetup = create(
           loaded: false,
           data: [],
         },
+        myOpenOrders: {
+          loaded: false,
+          data: [],
+        },
+        myFilledOrders: {
+          loaded: false,
+          data: [],
+        },
         transferInProgress: false,
       },
 
@@ -108,6 +116,8 @@ const useSetup = create(
         set({ provider }, false, "Account_Loading_done");
 
         await get().loadBalances();
+        await get().getMyOpenOrders();
+        await get().getMyFilledOrders();
 
         return account;
       },
@@ -556,12 +566,12 @@ const useSetup = create(
         if (!tokens[0] || !tokens[1]) return;
 
         // Filter out orders that are perculier to the current selected tokens in the exchange
-        orders.filter(
+        orders = orders.filter(
           (order) =>
             order.tokenGet === tokens[0].address ||
             order.tokenGet === tokens[1].address
         );
-        orders.filter(
+        orders = orders.filter(
           (order) =>
             order.tokenGive === tokens[0].address ||
             order.tokenGive === tokens[1].address
@@ -607,7 +617,6 @@ const useSetup = create(
           (a, b) => b.tokenPrice - a.tokenPrice
         );
         // Get open orders *****************/
-
         // Update store
         set(
           (state) => {
@@ -635,12 +644,12 @@ const useSetup = create(
         if (!tokens[0] || !tokens[1]) return;
 
         // Filter out orders that are perculier to the current selected tokens in the exchange
-        orders.filter(
+        orders = orders.filter(
           (order) =>
             order.tokenGet === tokens[0].address ||
             order.tokenGet === tokens[1].address
         );
-        orders.filter(
+        orders = orders.filter(
           (order) =>
             order.tokenGive === tokens[0].address ||
             order.tokenGive === tokens[1].address
@@ -675,12 +684,12 @@ const useSetup = create(
         if (!tokens[0] || !tokens[1]) return;
 
         // Filter out orders that are perculier to the current selected tokens in the exchange
-        orders.filter(
+        orders = orders.filter(
           (order) =>
             order.tokenGet === tokens[0].address ||
             order.tokenGet === tokens[1].address
         );
-        orders.filter(
+        orders = orders.filter(
           (order) =>
             order.tokenGive === tokens[0].address ||
             order.tokenGive === tokens[1].address
@@ -715,12 +724,119 @@ const useSetup = create(
         // Sort orders by date (descending) to compare history
         orders = orders.sort((a, b) => b.timestamp - a.timestamp);
 
-        console.log({ Trades: orders });
+        set(
+          (state) => {
+            state.exchange.trades.data = orders;
+            state.exchange.trades.loaded = true;
+          },
+          false,
+          "Trades_loaded"
+        );
+      },
+      getMyOpenOrders: async () => {
+        // Filter orders by seleted tokens
+        const openOrders = get().exchange.openOrders.data.all;
+        let orders = [...openOrders];
+        const tokens = get().tokens.contracts;
+        const account = get().provider.account;
 
-        set((state) => {
-          state.exchange.trades.data = orders;
-          state.exchange.trades.loaded = true;
+        // Check if tokens are available
+        if (!tokens[0] || !tokens[1]) return;
+
+        // Get user orders
+        orders = orders.filter((order) => order.user === account);
+
+        // Filter out orders that are perculier to the current selected tokens in the exchange
+        orders = orders.filter(
+          (order) =>
+            order.tokenGet === tokens[0].address ||
+            order.tokenGet === tokens[1].address
+        );
+        orders = orders.filter(
+          (order) =>
+            order.tokenGive === tokens[0].address ||
+            order.tokenGive === tokens[1].address
+        );
+
+        // Sort orders by date (ascending) to compare history
+        // orders = orders.sort((a, b) => a.timestamp - b.timestamp);
+
+        // Sort orders by date (descending) to compare history
+        orders = orders.sort((a, b) => b.timestamp - a.timestamp);
+
+        set(
+          (state) => {
+            state.exchange.myOpenOrders.data = orders;
+            state.exchange.myOpenOrders.loaded = true;
+          },
+          false,
+          "My_open_orders_loaded"
+        );
+      },
+      getMyFilledOrders: async () => {
+        // Filter orders by seleted tokens
+        const filledOrders = get().exchange.filledOrders.data.all;
+        let orders = [...filledOrders];
+        const tokens = get().tokens.contracts;
+        const account = get().provider.account;
+
+        // Check if tokens are available
+        if (!tokens[0] || !tokens[1]) return;
+
+        // Get our  orders
+        orders = orders.filter(
+          (order) => order.user === account || order.creator === account
+        );
+
+        // Filter out orders that are perculier to the current selected tokens in the exchange
+        orders = orders.filter(
+          (order) =>
+            order.tokenGet === tokens[0].address ||
+            order.tokenGet === tokens[1].address
+        );
+        orders = orders.filter(
+          (order) =>
+            order.tokenGive === tokens[0].address ||
+            order.tokenGive === tokens[1].address
+        );
+
+        // Sort orders by date (descending) to compare history
+        orders = orders.sort((a, b) => b.timestamp - a.timestamp);
+
+        // Decorate orders
+        orders = formatOrders(orders, tokens);
+        orders = orders.map((order) => {
+          const myOrder = order.creator === account;
+          let orderType;
+          if (myOrder) {
+            orderType = order.tokenGive === tokens[1].address ? "buy" : "sell";
+          } else {
+            orderType = order.tokenGive === tokens[1].address ? "sell" : "buy";
+          }
+          return {
+            ...order,
+            orderType,
+            orderClass:
+              orderType === "buy"
+                ? orderTypeColors.buyColor
+                : orderTypeColors.sellColor,
+            tokenTradeAmount:
+              orderType === "buy"
+                ? `+${order.token0Amount}`
+                : `-${order.token0Amount}`,
+          };
         });
+
+        console.log({ orders });
+
+        set(
+          (state) => {
+            state.exchange.myFilledOrders.data = orders;
+            state.exchange.myFilledOrders.loaded = true;
+          },
+          false,
+          "My_filled_orders_loaded"
+        );
       },
       initSetUp: async () => {
         // Connect Ethers to blockchain
@@ -745,6 +861,8 @@ const useSetup = create(
         await get().priceChartSelector();
         // Load trades
         await get().tradesSelector();
+        // Load my open orders
+        // await get().getMyOpenOrders();
       },
     }))
   )

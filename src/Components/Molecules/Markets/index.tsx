@@ -11,7 +11,13 @@ interface Props {}
 const Markets: React.FC<Props> = () => {
   // Store
   const chainId = useSetup().provider.chainId;
-  const { loadToken, tokens,orderBookSelector } = useSetup();
+  const {
+    loadToken,
+    tokens,
+    orderBookSelector,
+    tradesSelector,
+    getMyOpenOrders,
+  } = useSetup();
 
   // Variables
   const config = JSON.parse(JSON.stringify(configData));
@@ -67,7 +73,9 @@ const Markets: React.FC<Props> = () => {
       setSelected(option.label);
       setSelectedValue(option.value);
     }
-    orderBookSelector();
+    await orderBookSelector();
+    await tradesSelector();
+    await getMyOpenOrders();
   };
 
   // Data to render

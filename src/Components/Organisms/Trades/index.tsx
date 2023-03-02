@@ -33,7 +33,7 @@ const Trades: React.FC<Props> = () => {
 
   // Data to render
   return (
-    <Wrapper className="mb-30">
+    <Wrapper>
       <Typography as="h6" className="heading-5 mb-30" text="Trades" />
       {data && data.length ? (
         <TradesTable

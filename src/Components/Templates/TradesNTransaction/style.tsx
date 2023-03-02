@@ -9,5 +9,7 @@ export const Wrapper = styled(motion.main)`
   grid-gap: 3rem;
   & > * {
     flex-grow: 1;
+    height: 31rem;
+    overflow: auto;
   }
 `;

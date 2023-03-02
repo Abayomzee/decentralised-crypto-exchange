@@ -4,6 +4,7 @@ import { OrderTypeCard, OrderTypesWrapper, Wrapper } from "./style";
 import SellingOrdersTable from "Components/Organisms/Table/Tables/SellingOrdersTable";
 import BuyingOrdersTable from "Components/Organisms/Table/Tables/BuyingOrdersTable";
 import useSetup from "Store/setup";
+import EmptyState from "Components/Atom/EmptyState";
 
 // Types
 interface Props {}
@@ -38,24 +39,36 @@ const OrderBook: React.FC<Props> = () => {
       <Typography as="h6" className="heading-5 mb-30" text="Order Book" />
       <OrderTypesWrapper>
         <OrderTypeCard>
-          <Typography as="h6" className="heading-6" text="Selling" />
-          <SellingOrdersTable
-            head={tableHead}
-            data={sellOrders}
-            columns={tableColumns}
-            columnWithColor="tokenPrice"
-            columnColorPropName="orderTypeClass"
-          />
+          {sellOrders && sellOrders.length ? (
+            <>
+              <Typography as="h6" className="heading-6" text="Selling" />
+              <SellingOrdersTable
+                head={tableHead}
+                data={sellOrders}
+                columns={tableColumns}
+                columnWithColor="tokenPrice"
+                columnColorPropName="orderTypeClass"
+              />
+            </>
+          ) : (
+            <EmptyState text="No orders found" />
+          )}
         </OrderTypeCard>
         <OrderTypeCard>
-          <Typography as="h6" className="heading-6" text="Buying" />
-          <BuyingOrdersTable
-            head={tableHead}
-            data={buyOrders}
-            columns={tableColumns}
-            columnWithColor="tokenPrice"
-            columnColorPropName="orderTypeClass"
-          />
+          {buyOrders && buyOrders.length ? (
+            <>
+              <Typography as="h6" className="heading-6" text="Buying" />
+              <BuyingOrdersTable
+                head={tableHead}
+                data={buyOrders}
+                columns={tableColumns}
+                columnWithColor="tokenPrice"
+                columnColorPropName="orderTypeClass"
+              />
+            </>
+          ) : (
+            <EmptyState text="No orders found" />
+          )}
         </OrderTypeCard>
       </OrderTypesWrapper>
     </Wrapper>

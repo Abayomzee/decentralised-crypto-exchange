@@ -41,6 +41,7 @@ contract Exchange {
         uint256 amountGet,
         address tokenGive, 
         uint256 amountGive,
+        address creator,
         uint256 timestamp
         );
 
@@ -80,7 +81,7 @@ contract Exchange {
         Token(_token).transfer(msg.sender, _amount);
         
         // Update user balance
-        tokens[_token][msg.sender] = tokens[_token][msg.sender] - _amount;
+        tokens[_token][msg.sender] = tokens[_token][msg.sender] -  _amount;
 
         // Emit an event
         emit Withdraw(_token, msg.sender, _amount, tokens[_token][msg.sender]);
@@ -136,7 +137,7 @@ contract Exchange {
         tokens[_tokenGive][msg.sender] = tokens[_tokenGive][msg.sender] + _amountGive;
 
         // Emit event    
-        emit Trade(_orderId, msg.sender, _tokenGet, _amountGet, _tokenGive, _amountGive, block.timestamp);
+        emit Trade(_orderId, msg.sender, _tokenGet, _amountGet, _tokenGive, _amountGive, _user, block.timestamp);
     }
 
 
