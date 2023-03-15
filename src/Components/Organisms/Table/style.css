@@ -40,10 +40,11 @@
 
 .table-row {
   transition: 0.4s;
+  cursor: pointer;
 }
 
 .table-row:hover {
-  /* background-color: var(--color-10); */
+  background-color: var(--color-2);
 }
 
 .table-head,

@@ -8,6 +8,7 @@ interface Props {
   columns: any[];
   columnWithColor?: string;
   columnColorPropName?: string;
+  onRowClick?: (item: any)=>void
 }
 // Main component
 const SellingOrdersTable: React.FC<Props> = (props) => {

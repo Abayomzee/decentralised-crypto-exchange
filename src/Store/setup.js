@@ -460,6 +460,49 @@ const useSetup = create(
             );
           }
         );
+
+        // Listen to 'Trade' events
+        exchange.on(
+          "Trade",
+          (
+            id,
+            user,
+            tokenGet,
+            amountGet,
+            tokenGive,
+            amountGive,
+            creator,
+            timestamp,
+            events
+          ) => {
+            const order = events.args;
+            set(
+              (state) => {
+                state.exchange.transferInProgress = false;
+                state.exchange.transaction.isPending = false;
+                state.exchange.transaction.isSuccessful = true;
+
+                // Add new events
+                state.exchange.events = [events, ...state.exchange.events];
+
+                // Add new filled Order
+                let index = state.exchange.filledOrders.data.all.findIndex(
+                  (order) => order.id.toString() === id.toString()
+                );
+
+                if (index === -1) {
+                  state.exchange.filledOrders.data.all = [
+                    ...state.exchange.filledOrders.data.all,
+                    order,
+                  ];
+                } else {
+                }
+              },
+              false,
+              "Order_Fill_completed"
+            );
+          }
+        );
         // });
       },
       makeBuyOrder: async (amount, price) => {
@@ -898,6 +941,39 @@ const useSetup = create(
             },
             false,
             "Order_Cancel_failed"
+          );
+        }
+      },
+      handleFilledOrder: async (order) => {
+        const provider = get().provider.connection;
+        const exchange = get().exchange.contract;
+
+        set(
+          (state) => {
+            state.exchange.transferInProgress = true;
+            state.exchange.transaction.transactionType = "Fill Order";
+            state.exchange.transaction.isPending = true;
+            state.exchange.transaction.isSuccessful = false;
+          },
+          false,
+          "Order_Fill_started"
+        );
+
+        let transaction;
+        try {
+          const signer = await provider.getSigner();
+          transaction = await exchange.connect(signer).fillOrder(order.id);
+          await transaction.wait();
+        } catch (error) {
+          set(
+            (state) => {
+              state.exchange.transferInProgress = false;
+              state.exchange.transaction.isPending = false;
+              state.exchange.transaction.isSuccessful = false;
+              state.exchange.transaction.isError = true;
+            },
+            false,
+            "Order_Fill_failed"
           );
         }
       },

@@ -56,8 +56,8 @@ const MyTransactions: React.FC<Props> = () => {
   // Effects
   useEffect(() => {
     orderBookSelector();
-    getMyFilledOrders();
     getMyOpenOrders();
+    getMyFilledOrders();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [transferInProgress]);
 

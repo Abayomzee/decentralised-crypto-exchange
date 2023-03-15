@@ -13,10 +13,12 @@ interface Props {
   data?: any;
   columnWithColor?: any;
   columnColorPropName?: any;
+  onRowClick?: (data: any) => void;
 }
 const TableBody: React.FC<Props> = (props) => {
   // Props
-  const { columns, data, columnWithColor, columnColorPropName } = props;
+  const { columns, data, columnWithColor, columnColorPropName, onRowClick } =
+    props;
 
   // Store
   const { handleCancelOrder } = useSetup();
@@ -36,7 +38,11 @@ const TableBody: React.FC<Props> = (props) => {
     <tbody>
       {data.map((item: any) => {
         return (
-          <tr key={item.id} className="table-row">
+          <tr
+            key={item.id}
+            onClick={() => onRowClick && onRowClick!(item)}
+            className="table-row"
+          >
             {columns.map((column: columnProps) => (
               <td
                 className="table-body"

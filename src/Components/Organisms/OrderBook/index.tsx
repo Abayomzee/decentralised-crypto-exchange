@@ -21,6 +21,7 @@ const OrderBook: React.FC<Props> = () => {
   const { sellOrders, buyOrders } = data;
   const { transferInProgress } = useSetup().exchange;
   const orderBookSelector = useSetup().orderBookSelector;
+  const handleFilledOrder = useSetup().handleFilledOrder;
 
   // Variable
   const tableHead = [
@@ -34,6 +35,11 @@ const OrderBook: React.FC<Props> = () => {
     { label: "tokenPrice", path: "tokenPrice" },
     { label: "token1Amount", path: "token1Amount" },
   ];
+
+  // Method
+  const fillOrder = (order: any) => {
+    handleFilledOrder(order);
+  };
 
   // Effect
   useEffect(() => {
@@ -56,6 +62,7 @@ const OrderBook: React.FC<Props> = () => {
                 columns={tableColumns}
                 columnWithColor="tokenPrice"
                 columnColorPropName="orderTypeClass"
+                onRowClick={fillOrder}
               />
             </>
           ) : (
@@ -72,6 +79,7 @@ const OrderBook: React.FC<Props> = () => {
                 columns={tableColumns}
                 columnWithColor="tokenPrice"
                 columnColorPropName="orderTypeClass"
+                onRowClick={fillOrder}
               />
             </>
           ) : (

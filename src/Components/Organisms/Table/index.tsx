@@ -10,9 +10,12 @@ interface Props {
   data: Array<any>;
   columnWithColor?: string;
   columnColorPropName?: string;
+  onRowClick?: (item: any) => void;
 }
 const Table: React.FC<Props> = (props) => {
   const { data, columns, head } = props;
+
+  // Data to display
   return (
     <div className="t-wrapper">
       <div className="table-div">

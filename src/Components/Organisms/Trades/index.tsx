@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Typography from "Components/Atom/Typography";
 import { Wrapper } from "./style";
 import useSetup from "Store/setup";
@@ -17,6 +17,8 @@ const Trades: React.FC<Props> = () => {
   const tokenTwoSymbol = symbols[1];
   // Select exchange data from store
   const { data } = useSetup().exchange.trades;
+  const { transferInProgress } = useSetup().exchange;
+  const tradesSelector = useSetup().tradesSelector;
 
   // Variable
   const tableHead = [
@@ -30,6 +32,15 @@ const Trades: React.FC<Props> = () => {
     { label: "token0Amount", path: "token0Amount" },
     { label: "tokenPrice", path: "tokenPrice" },
   ];
+
+  // Effects
+  useEffect(
+    () => {
+      tradesSelector();
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [transferInProgress]
+  );
 
   // Data to render
   return (
