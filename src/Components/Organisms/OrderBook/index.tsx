@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Typography from "Components/Atom/Typography";
 import { OrderTypeCard, OrderTypesWrapper, Wrapper } from "./style";
 import SellingOrdersTable from "Components/Organisms/Table/Tables/SellingOrdersTable";
@@ -19,6 +19,8 @@ const OrderBook: React.FC<Props> = () => {
   // Select exchange data from store
   const { data } = useSetup().exchange.openOrders;
   const { sellOrders, buyOrders } = data;
+  const { transferInProgress } = useSetup().exchange;
+  const orderBookSelector = useSetup().orderBookSelector;
 
   // Variable
   const tableHead = [
@@ -32,6 +34,12 @@ const OrderBook: React.FC<Props> = () => {
     { label: "tokenPrice", path: "tokenPrice" },
     { label: "token1Amount", path: "token1Amount" },
   ];
+
+  // Effect
+  useEffect(() => {
+    orderBookSelector();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [transferInProgress]);
 
   // Data to render
   return (

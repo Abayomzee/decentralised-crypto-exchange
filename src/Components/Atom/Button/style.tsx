@@ -19,6 +19,10 @@ export const Wrapper = styled(Button)`
     &-md {
       padding: 0.8rem 2rem;
     }
+    
+    &-sm {
+      padding: 0.3rem 1.1rem;
+    }
 
     /* Types */
 

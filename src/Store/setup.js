@@ -258,7 +258,6 @@ const useSetup = create(
           "Token_2_exchange_balance_Loaded"
         );
       },
-
       transferTokens: async (token, amount, type) => {
         set(
           (state) => {
@@ -428,6 +427,39 @@ const useSetup = create(
             );
           }
         );
+
+        // Listen to 'Cancel' events
+        exchange.on(
+          "Cancel",
+          (
+            id,
+            user,
+            tokenGet,
+            amountGet,
+            tokenGive,
+            amountGive,
+            timestamp,
+            events
+          ) => {
+            const order = events.args;
+            set(
+              (state) => {
+                state.exchange.transferInProgress = false;
+                state.exchange.transaction.isPending = false;
+                state.exchange.transaction.isSuccessful = true;
+
+                // Add new events
+                state.exchange.events = [events, ...state.exchange.events];
+                state.exchange.cancelledOrders.data.all = [
+                  ...state.exchange.cancelledOrders.data.all,
+                  order,
+                ];
+              },
+              false,
+              "Order_cancel_completed"
+            );
+          }
+        );
         // });
       },
       makeBuyOrder: async (amount, price) => {
@@ -463,7 +495,7 @@ const useSetup = create(
         } catch (error) {
           set(
             (state) => {
-              state.exchange.transferInProgress = true;
+              state.exchange.transferInProgress = false;
               state.exchange.transaction.isPending = false;
               state.exchange.transaction.isSuccessful = false;
               state.exchange.transaction.isError = true;
@@ -506,7 +538,7 @@ const useSetup = create(
         } catch (error) {
           set(
             (state) => {
-              state.exchange.transferInProgress = true;
+              state.exchange.transferInProgress = false;
               state.exchange.transaction.isPending = false;
               state.exchange.transaction.isSuccessful = false;
               state.exchange.transaction.isError = true;
@@ -827,8 +859,6 @@ const useSetup = create(
           };
         });
 
-        console.log({ orders });
-
         set(
           (state) => {
             state.exchange.myFilledOrders.data = orders;
@@ -837,6 +867,39 @@ const useSetup = create(
           false,
           "My_filled_orders_loaded"
         );
+      },
+      handleCancelOrder: async (order) => {
+        const provider = get().provider.connection;
+        const exchange = get().exchange.contract;
+
+        set(
+          (state) => {
+            state.exchange.transferInProgress = true;
+            state.exchange.transaction.transactionType = "Cancel Order";
+            state.exchange.transaction.isPending = true;
+            state.exchange.transaction.isSuccessful = false;
+          },
+          false,
+          "Order_Cancel_started"
+        );
+
+        let transaction;
+        try {
+          const signer = await provider.getSigner();
+          transaction = await exchange.connect(signer).cancelOrder(order.id);
+          await transaction.wait();
+        } catch (error) {
+          set(
+            (state) => {
+              state.exchange.transferInProgress = false;
+              state.exchange.transaction.isPending = false;
+              state.exchange.transaction.isSuccessful = false;
+              state.exchange.transaction.isError = true;
+            },
+            false,
+            "Order_Cancel_failed"
+          );
+        }
       },
       initSetUp: async () => {
         // Connect Ethers to blockchain
@@ -863,6 +926,8 @@ const useSetup = create(
         await get().tradesSelector();
         // Load my open orders
         // await get().getMyOpenOrders();
+        // Load my filled orders
+        // await get().getMyFilledOrders();
       },
     }))
   )

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Typography from "Components/Atom/Typography";
 import { TabNav, TabNavs, Wrapper } from "./style";
 import useSetup from "Store/setup";
@@ -19,31 +19,47 @@ const MyTransactions: React.FC<Props> = () => {
   const { symbols } = tokens;
   const tokenOneSymbol = symbols[0];
   const tokenTwoSymbol = symbols[1];
-  // Select exchange data from store
+
   const { data } = useSetup().exchange.myOpenOrders;
   const { data: filledOrders } = useSetup().exchange.myFilledOrders;
+
+  const { transferInProgress } = useSetup().exchange;
+  const getMyFilledOrders = useSetup().getMyFilledOrders;
+  const getMyOpenOrders = useSetup().getMyOpenOrders;
+  const orderBookSelector = useSetup().orderBookSelector;
 
   // Variable
   const tableHead = [
     `${tokenOneSymbol}`,
     `${tokenOneSymbol}/${tokenTwoSymbol}`,
-  ];
- 
-  const ordersTableHead = [
-    'Time',
-    `${tokenOneSymbol}`,
-    `${tokenOneSymbol}/${tokenTwoSymbol}`,
+    "",
   ];
 
   const tableColumns = [
     { label: "token0Amount", path: "token0Amount" },
     { label: "tokenPrice", path: "tokenPrice" },
+    { label: "action", path: "action" },
   ];
+
+  const ordersTableHead = [
+    "Time",
+    `${tokenOneSymbol}`,
+    `${tokenOneSymbol}/${tokenTwoSymbol}`,
+  ];
+
   const tradesTableColumns = [
     { label: "formattedTimestamp", path: "formattedTimestamp" },
     { label: "tokenTradeAmount", path: "tokenTradeAmount" },
     { label: "tokenPrice", path: "tokenPrice" },
   ];
+
+  // Effects
+  useEffect(() => {
+    orderBookSelector();
+    getMyFilledOrders();
+    getMyOpenOrders();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [transferInProgress]);
 
   // Data to render
   return (

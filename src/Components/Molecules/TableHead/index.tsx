@@ -1,7 +1,7 @@
 import { SortIcon } from "Components/Atom/Svgs";
 import Typography from "Components/Atom/Typography";
 import React from "react";
- 
+
 interface Props {
   columns?: object[];
 }
@@ -14,7 +14,7 @@ const TableHead: React.FC<Props> = (props) => {
           <th key={i} scope="col" className="table-head">
             <Typography as="span" className="paragraph-4 table-head-item">
               {column}
-              <SortIcon />
+              {!column ? null : <SortIcon />}
             </Typography>
           </th>
         ))}

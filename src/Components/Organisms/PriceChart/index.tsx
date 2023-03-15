@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Typography from "Components/Atom/Typography";
-import { Wrapper, NoAccountConnected } from "./style";
+import { Wrapper } from "./style";
 import Chart from "react-apexcharts";
 import useSetup from "Store/setup";
 import { options } from "./config";
@@ -18,7 +18,16 @@ const PriceChart: React.FC<Props> = () => {
   const { series, lastPrice, lastPriceChangeStatus } =
     useSetup().exchange.chartdata;
 
-  // console.log({xx})
+  const { transferInProgress } = useSetup().exchange;
+  const orderBookSelector = useSetup().orderBookSelector;
+  const priceChartSelector = useSetup().priceChartSelector;
+
+  // Effects
+  useEffect(() => {
+    orderBookSelector();
+    priceChartSelector();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [transferInProgress]);
 
   // Data to render
   return (
