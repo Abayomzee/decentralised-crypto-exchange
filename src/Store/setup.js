@@ -29,6 +29,7 @@ const useSetup = create(
         loaded: false,
         contract: null,
         balances: [],
+        transferInProgress: false,
         transaction: {
           transactionType: "Transfer",
           isPending: false,
@@ -36,6 +37,7 @@ const useSetup = create(
           isError: false,
         },
         events: [],
+        myEvents: [],
         allOrders: {
           loaded: false,
           data: [],
@@ -73,7 +75,6 @@ const useSetup = create(
           loaded: false,
           data: [],
         },
-        transferInProgress: false,
       },
 
       // Methods
@@ -118,6 +119,7 @@ const useSetup = create(
         await get().loadBalances();
         await get().getMyOpenOrders();
         await get().getMyFilledOrders();
+        await get().getMyEvents();
 
         return account;
       },
@@ -293,7 +295,6 @@ const useSetup = create(
             set(
               (state) => {
                 state.exchange.transferInProgress = false;
-                state.exchange.transaction.transactionType = type;
                 state.exchange.transaction.isPending = false;
                 state.exchange.transaction.isSuccessful = false;
                 state.exchange.transaction.isError = true;
@@ -315,7 +316,6 @@ const useSetup = create(
             set(
               (state) => {
                 state.exchange.transferInProgress = false;
-                state.exchange.transaction.transactionType = type;
                 state.exchange.transaction.isPending = false;
                 state.exchange.transaction.isSuccessful = false;
                 state.exchange.transaction.isError = true;
@@ -332,14 +332,8 @@ const useSetup = create(
         // provider.once("block", () => {
         // Listen to 'Deposit' events
         exchange.on("Deposit", (token, user, amount, balance, events) => {
-          console.log({ depositEvent: events });
-
           set(
             (state) => {
-              state.exchange.transferInProgress = false;
-              state.exchange.transaction.isPending = false;
-              state.exchange.transaction.isSuccessful = true;
-
               // Add new events
               let lastEvent = state.exchange.events[0]; // check for last event if available
               if (!lastEvent) {
@@ -347,6 +341,11 @@ const useSetup = create(
               } else if (lastEvent.blockNumber !== events.blockNumber) {
                 state.exchange.events = [events, ...state.exchange.events];
               }
+
+              state.exchange.transferInProgress = false;
+              state.exchange.transaction.isPending = false;
+              state.exchange.transaction.isSuccessful = true;
+
             },
             false,
             "Deposit_request_completed"
@@ -357,10 +356,6 @@ const useSetup = create(
         exchange.on("Withdraw", (token, user, amount, balance, events) => {
           set(
             (state) => {
-              state.exchange.transferInProgress = false;
-              state.exchange.transaction.isPending = false;
-              state.exchange.transaction.isSuccessful = true;
-
               // Add new events
               let lastEvent = state.exchange.events[0]; // check for last event if available
               if (!lastEvent) {
@@ -368,6 +363,11 @@ const useSetup = create(
               } else if (lastEvent.blockNumber !== events.blockNumber) {
                 state.exchange.events = [events, ...state.exchange.events];
               }
+
+              state.exchange.transferInProgress = false;
+              state.exchange.transaction.isPending = false;
+              state.exchange.transaction.isSuccessful = true;
+
             },
             false,
             "Withdraw_request_completed"
@@ -390,11 +390,6 @@ const useSetup = create(
             const order = events.args;
             set(
               (state) => {
-                state.exchange.transferInProgress = false;
-                state.exchange.transaction.isPending = false;
-                state.exchange.transaction.isSuccessful = true;
-                // state.exchange.allOrders = [order, ...state.exchange.allOrders];
-
                 // Add new events
                 let lastEvent = state.exchange.events[0]; // check for last event if available
                 if (!lastEvent) {
@@ -421,6 +416,11 @@ const useSetup = create(
 
                 // Updated Order loaded status
                 state.exchange.allOrders.loaded = true;
+
+                state.exchange.transferInProgress = false;
+                state.exchange.transaction.isPending = false;
+                state.exchange.transaction.isSuccessful = true;
+
               },
               false,
               "Order_request_completed"
@@ -444,16 +444,26 @@ const useSetup = create(
             const order = events.args;
             set(
               (state) => {
-                state.exchange.transferInProgress = false;
-                state.exchange.transaction.isPending = false;
-                state.exchange.transaction.isSuccessful = true;
+                // Add new events
+                let lastEvent = state.exchange.events[0]; // check for last event if available
+                if (!lastEvent) {
+                  state.exchange.events = [events];
+                } else if (lastEvent.blockNumber !== events.blockNumber) {
+                  state.exchange.events = [events, ...state.exchange.events];
+                }
 
                 // Add new events
-                state.exchange.events = [events, ...state.exchange.events];
+                // state.exchange.events = [events, ...state.exchange.events];
+
                 state.exchange.cancelledOrders.data.all = [
                   ...state.exchange.cancelledOrders.data.all,
                   order,
                 ];
+
+                state.exchange.transferInProgress = false;
+                state.exchange.transaction.isPending = false;
+                state.exchange.transaction.isSuccessful = true;
+
               },
               false,
               "Order_cancel_completed"
@@ -478,12 +488,15 @@ const useSetup = create(
             const order = events.args;
             set(
               (state) => {
-                state.exchange.transferInProgress = false;
-                state.exchange.transaction.isPending = false;
-                state.exchange.transaction.isSuccessful = true;
-
                 // Add new events
-                state.exchange.events = [events, ...state.exchange.events];
+                let lastEvent = state.exchange.events[0]; // check for last event if available
+                if (!lastEvent) {
+                  state.exchange.events = [events];
+                } else if (lastEvent.blockNumber !== events.blockNumber) {
+                  state.exchange.events = [events, ...state.exchange.events];
+                }
+                // Add new events
+                // state.exchange.events = [events, ...state.exchange.events];
 
                 // Add new filled Order
                 let index = state.exchange.filledOrders.data.all.findIndex(
@@ -497,6 +510,10 @@ const useSetup = create(
                   ];
                 } else {
                 }
+
+                state.exchange.transferInProgress = false;
+                state.exchange.transaction.isPending = false;
+                state.exchange.transaction.isSuccessful = true;
               },
               false,
               "Order_Fill_completed"
@@ -977,6 +994,15 @@ const useSetup = create(
           );
         }
       },
+      getMyEvents: () => {
+        const events = get().exchange.events;
+        const account = get().provider.account;
+
+        let myEvents = events.filter((event) => event.args.user === account);
+        console.log({ myEvents, events });
+
+        // set();
+      },
       initSetUp: async () => {
         // Connect Ethers to blockchain
         await get().loadProvider();
@@ -1004,6 +1030,8 @@ const useSetup = create(
         // await get().getMyOpenOrders();
         // Load my filled orders
         // await get().getMyFilledOrders();
+        // Load my events
+        await get().getMyEvents();
       },
     }))
   )

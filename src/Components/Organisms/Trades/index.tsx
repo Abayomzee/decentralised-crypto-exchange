@@ -36,7 +36,7 @@ const Trades: React.FC<Props> = () => {
   // Effects
   useEffect(
     () => {
-      tradesSelector();
+      tradesSelector( );
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [transferInProgress]

@@ -46,6 +46,7 @@ const OrderBook: React.FC<Props> = () => {
     orderBookSelector();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [transferInProgress]);
+  console.log({ orderBook: transferInProgress });
 
   // Data to render
   return (
