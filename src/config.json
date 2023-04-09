@@ -18,6 +18,33 @@
     "explorerURL": "https://kovan.etherscan.io"
   },
   "5": {
+    "exchange": {
+      "address": "0x1dd73e37C4DFF69278d8D2B657552CC62Cea72A3"
+    },
+    "Dapp": {
+      "address": "0x29cf026b90855Be1b76ee11FA80b8E3E23792482"
+    },
+    "mDai": {
+      "address": "0xD6fedeC72Df24158D658458bf0FF1e5ce87f6918"
+    },
+    "mETH": {
+      "address": "0x1E3A2A4eFFE17e826e6B7D73DC1Badf2D0A4D5e2"
+    },
     "explorerURL": "https://goerli.etherscan.io"
+  },
+  "11155111": {
+    "exchange": {
+      "address": "0xD6fedeC72Df24158D658458bf0FF1e5ce87f6918"
+    },
+    "Dapp": {
+      "address": "0x6BBEb105FacBE602Ea4D9C36cc9096716841da9C"
+    },
+    "mDai": {
+      "address": "0x1E3A2A4eFFE17e826e6B7D73DC1Badf2D0A4D5e2"
+    },
+    "mETH": {
+      "address": "0x29cf026b90855Be1b76ee11FA80b8E3E23792482"
+    },
+    "explorerURL": "https://sepolia.etherscan.io"
   }
 }

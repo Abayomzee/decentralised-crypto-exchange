@@ -118,7 +118,7 @@ const Balance: React.FC<Props> = () => {
         <form onSubmit={(e) => handleDeposit(e, tokenContracts[0])}>
           <Input
             placeholder="0.0000"
-            label="Amount"
+            label={`${symbols.length ? symbols[0] : ""} Amount`}
             value={token1Amount}
             onChange={(e) => handleChange(e, tokenContracts[0])}
             className="md"
@@ -167,7 +167,7 @@ const Balance: React.FC<Props> = () => {
         <form onSubmit={(e) => handleDeposit(e, tokenContracts[1])}>
           <Input
             placeholder="0.0000"
-            label="Amount"
+            label={`${symbols.length ? symbols[1] : ""} Amount`}
             value={token2Amount}
             onChange={(e) => handleChange(e, tokenContracts[1])}
             className="md"

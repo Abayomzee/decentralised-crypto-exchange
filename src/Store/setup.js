@@ -4,10 +4,10 @@ import { devtools } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 import _ from "lodash";
 //
-import { addresses, orderTypeColors } from "Utils/Constants";
+import { getAddresses, orderTypeColors } from "Utils/Constants";
 import ExchangeAbi from "Abis/Exchange.json";
 import TokenAbi from "Abis/Token.json";
-import { buildGraphdata, c, formatOrders } from "Utils/Helpers";
+import { buildGraphdata, formatOrders } from "Utils/Helpers";
 
 const useSetup = create(
   immer(
@@ -176,9 +176,10 @@ const useSetup = create(
       },
       loadExchange: async () => {
         const exchange = { ...get().exchange };
+        const chainId = get().provider.chainId;
 
         let exchangeContract = new ethers.Contract(
-          addresses.exchange,
+          getAddresses(chainId).exchange,
           ExchangeAbi,
           get().provider.connection
         );
@@ -344,8 +345,8 @@ const useSetup = create(
 
               state.exchange.transferInProgress = false;
               state.exchange.transaction.isPending = false;
+              state.exchange.transaction.isError = false;
               state.exchange.transaction.isSuccessful = true;
-
             },
             false,
             "Deposit_request_completed"
@@ -366,8 +367,8 @@ const useSetup = create(
 
               state.exchange.transferInProgress = false;
               state.exchange.transaction.isPending = false;
+              state.exchange.transaction.isError = false;
               state.exchange.transaction.isSuccessful = true;
-
             },
             false,
             "Withdraw_request_completed"
@@ -419,8 +420,8 @@ const useSetup = create(
 
                 state.exchange.transferInProgress = false;
                 state.exchange.transaction.isPending = false;
+                state.exchange.transaction.isError = false;
                 state.exchange.transaction.isSuccessful = true;
-
               },
               false,
               "Order_request_completed"
@@ -462,8 +463,8 @@ const useSetup = create(
 
                 state.exchange.transferInProgress = false;
                 state.exchange.transaction.isPending = false;
+                state.exchange.transaction.isError = false;
                 state.exchange.transaction.isSuccessful = true;
-
               },
               false,
               "Order_cancel_completed"
@@ -513,6 +514,7 @@ const useSetup = create(
 
                 state.exchange.transferInProgress = false;
                 state.exchange.transaction.isPending = false;
+                state.exchange.transaction.isError = false;
                 state.exchange.transaction.isSuccessful = true;
               },
               false,
@@ -999,7 +1001,15 @@ const useSetup = create(
         const account = get().provider.account;
 
         let myEvents = events.filter((event) => event.args.user === account);
-        console.log({ myEvents, events });
+        // console.log({ myEvents, events });
+
+        set(
+          (state) => {
+            state.exchange.myEvents = myEvents;
+          },
+          false,
+          "Load_My_Events"
+        );
 
         // set();
       },
@@ -1013,7 +1023,11 @@ const useSetup = create(
         // // Fetch balance of current account from metamask
         // await get().loadBalance(); // Comment back
         // Load token smart contracts
-        await get().loadToken(addresses.Dapp, addresses.mETH);
+        const chainId = get().provider.chainId;
+        await get().loadToken(
+          getAddresses(chainId).Dapp,
+          getAddresses(chainId).mETH
+        );
         // Load exchange smart contracts
         await get().loadExchange();
         // Subscribe to events

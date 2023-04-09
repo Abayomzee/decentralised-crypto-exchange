@@ -28,6 +28,8 @@ const MyTransactions: React.FC<Props> = () => {
   const getMyOpenOrders = useSetup().getMyOpenOrders;
   const orderBookSelector = useSetup().orderBookSelector;
 
+  const { account } = useSetup().provider;
+
   // Variable
   const tableHead = [
     `${tokenOneSymbol}`,
@@ -59,7 +61,7 @@ const MyTransactions: React.FC<Props> = () => {
     getMyOpenOrders();
     getMyFilledOrders();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [transferInProgress]);
+  }, [transferInProgress, account]);
 
   // Data to render
   return (

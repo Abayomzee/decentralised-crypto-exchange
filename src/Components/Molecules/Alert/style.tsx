@@ -11,7 +11,20 @@ export const Wrapper = styled(motion.div)`
   bottom: 3rem;
   right: 2rem;
   z-index: 3;
-  box-shadow: 0 0 9rem rgba(4, 43, 134, 0.5);
+  box-shadow: 0 0 10rem 0.1rem rgba(131, 163, 236, 0.5);
+
+  .block-link {
+    display: block;
+    margin-inline: auto;
+    margin-top: 0.8rem;
+    /* text-decoration: none; */
+    color: var(--color-12);
+    transition: 0.4s;
+
+    &:hover {
+      color: var(--color-white);
+    }
+  }
 `;
 
 export const Close = styled(Button)`

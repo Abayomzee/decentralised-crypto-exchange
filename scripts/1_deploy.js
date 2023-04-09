@@ -9,6 +9,11 @@ async function main() {
 
   // Get accounts
   const accounts = await ethers.getSigners();
+  console.log("Accounts");
+  for (const account of accounts) {
+    console.log(`${account.address}`);
+  }
+  console.log("End of Accounts");
 
   // Deploy token Dapp
   const Dapp = await Token.deploy("Dapp", "Dapp", "1000000");

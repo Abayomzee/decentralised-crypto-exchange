@@ -17,6 +17,7 @@ import CustomSelect from "../CustomSelect";
 import { KovanNetwork, Localhost } from "Components/Atom/Svgs";
 import Spinner from "Components/Atom/Spinners";
 import config from "config.json";
+import SepoliaNetwork from "Components/Atom/Svgs/SepoliaNetwork";
 
 // Types
 interface NetworkOptionProps {
@@ -53,6 +54,13 @@ const TopBar: React.FC<Props> = () => {
       chainId: "5",
       icon: <KovanNetwork />,
     },
+    {
+      value: "0xAA36A7",
+      label: "Sepolia test network",
+      id: "0xAA36A7",
+      chainId: "11155111",
+      icon: <SepoliaNetwork />,
+    },
   ];
   const configData = JSON.parse(JSON.stringify(config));
 
@@ -76,13 +84,16 @@ const TopBar: React.FC<Props> = () => {
     });
   };
   const networkHandler = async (network: NetworkOptionProps) => {
+    console.log({ network });
     if (network?.id && network.label !== selected) {
       try {
         await window.ethereum.request({
           method: "wallet_switchEthereumChain",
           params: [{ chainId: network.id }],
         });
-      } catch {}
+      } catch {
+        console.log("Error while changing network");
+      }
     }
   };
   const setNetwork = () => {
@@ -100,7 +111,7 @@ const TopBar: React.FC<Props> = () => {
   useEffect(() => {
     loadNetworkOnChange();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [chainId]);
   useEffect(() => {
     setNetwork();
     // eslint-disable-next-line react-hooks/exhaustive-deps

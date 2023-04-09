@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
 import moment from "moment";
 import { orderTypeColors } from "Utils/Constants";
-import _ from 'lodash'
+import _ from "lodash";
 
 export const c = console.log.bind(document);
 
@@ -72,4 +72,3 @@ export const buildGraphdata = (allOrders: any) => {
 
   return graphData;
 };
-
