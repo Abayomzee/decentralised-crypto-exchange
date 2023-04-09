@@ -12,12 +12,11 @@ import Typography from "Components/Atom/Typography";
 import useSetup from "Store/setup";
 import Blockies from "react-blockies";
 import Button from "Components/Atom/Button";
-import { EthIcon } from "Components/Atom/Svgs";
+import { EthIcon, PolygonNetwork, SepoliaNetwork } from "Components/Atom/Svgs";
 import CustomSelect from "../CustomSelect";
 import { KovanNetwork, Localhost } from "Components/Atom/Svgs";
 import Spinner from "Components/Atom/Spinners";
 import config from "config.json";
-import SepoliaNetwork from "Components/Atom/Svgs/SepoliaNetwork";
 
 // Types
 interface NetworkOptionProps {
@@ -60,6 +59,13 @@ const TopBar: React.FC<Props> = () => {
       id: "0xAA36A7",
       chainId: "11155111",
       icon: <SepoliaNetwork />,
+    },
+    {
+      value: "0x13881",
+      label: "Polygon Mumbai",
+      id: "0x13881",
+      chainId: "80001",
+      icon: <PolygonNetwork />,
     },
   ];
   const configData = JSON.parse(JSON.stringify(config));

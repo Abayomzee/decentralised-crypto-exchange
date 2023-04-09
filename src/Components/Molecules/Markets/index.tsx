@@ -41,8 +41,8 @@ const Markets: React.FC<Props> = () => {
           : 0
       }`,
       label: "Dapp / mETH",
-      id: `0x${parseInt(chainId, 16)}`,
-      chainId: `0x${parseInt(chainId, 16)}`,
+      id: `0x${chainId.toString(16)}`,
+      chainId: `0x${chainId.toString(16)}`,
       icon: <></>,
     },
     {
@@ -56,7 +56,7 @@ const Markets: React.FC<Props> = () => {
           : 0
       }`,
       label: "Dapp / mDAI",
-      id: `0x${parseInt(chainId, 16)}`,
+      id: `0x${chainId.toString(16)}`,
       icon: <></>,
     },
   ];

@@ -7,3 +7,5 @@ export { default as Dapp } from "./Dapp";
 export { default as SortIcon } from "./SortIcon";
 export { default as UpArrow } from "./UpArrow";
 export { default as DownArrow } from "./DownArrow";
+export { default as SepoliaNetwork } from "./SepoliaNetwork";
+export { default as PolygonNetwork } from "./PolygonNetwork";
