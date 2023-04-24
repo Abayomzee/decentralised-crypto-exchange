@@ -13,7 +13,6 @@ const NoNetwork: React.FC<Props> = () => {
 
   // Methods
   const networkHandler = async (networkId: any) => {
-    console.log({ networkId });
     try {
       await window.ethereum.request({
         method: "wallet_switchEthereumChain",
@@ -46,7 +45,7 @@ const NoNetwork: React.FC<Props> = () => {
         />
         <Typography
           as="p"
-          className="paragraph-8 max-width-480 color-white text-center mt-30"
+          className="paragraph-8 max-width-480 mx-auto color-white text-center mt-30"
         >
           The Selected network is not supported on this platform, kindly click
           on any of the test network below to switch

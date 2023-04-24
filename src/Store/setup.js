@@ -12,6 +12,7 @@ import { buildGraphdata, formatOrders } from "Utils/Helpers";
 const useSetup = create(
   immer(
     devtools((set, get) => ({
+      isLoadingExchange: false,
       provider: {
         connection: null,
         chainId: "",
@@ -1014,38 +1015,63 @@ const useSetup = create(
         // set();
       },
       initSetUp: async () => {
-        // Connect Ethers to blockchain
-        await get().loadProvider();
-        // Fetch current network's chainId (e.g. hardhat: 31337, kovan: 42)
-        await get().loadNetwork();
-        // Fetch current account and balance from metamask
-        // await get().loadAccount(); // comment back
-        // // Fetch balance of current account from metamask
-        // await get().loadBalance(); // Comment back
-        // Load token smart contracts
-        const chainId = get().provider.chainId;
-        await get().loadToken(
-          getAddresses(chainId).Dapp,
-          getAddresses(chainId).mETH
+        set(
+          (state) => {
+            state.isLoadingExchange = true;
+          },
+          false,
+          "Exchange_Loading"
         );
-        // Load exchange smart contracts
-        await get().loadExchange();
-        // Subscribe to events
-        await get().subscribeToEvents();
-        // Load events
-        await get().loadAllOrders();
-        // Load order book
-        await get().orderBookSelector();
-        // Load price chart
-        await get().priceChartSelector();
-        // Load trades
-        await get().tradesSelector();
-        // Load my open orders
-        // await get().getMyOpenOrders();
-        // Load my filled orders
-        // await get().getMyFilledOrders();
-        // Load my events
-        await get().getMyEvents();
+        try {
+          // Connect Ethers to blockchain
+          await get().loadProvider();
+          // Fetch current network's chainId (e.g. hardhat: 31337, kovan: 42)
+          await get().loadNetwork();
+          // Fetch current account and balance from metamask
+          // await get().loadAccount(); // comment back
+          // // Fetch balance of current account from metamask
+          // await get().loadBalance(); // Comment back
+          // Load token smart contracts
+          const chainId = get().provider.chainId;
+          await get().loadToken(
+            getAddresses(chainId).Dapp,
+            getAddresses(chainId).mETH
+          );
+          // Load exchange smart contracts
+          await get().loadExchange();
+          // Subscribe to events
+          await get().subscribeToEvents();
+          // Load events
+          await get().loadAllOrders();
+          // Load order book
+          await get().orderBookSelector();
+          // Load price chart
+          await get().priceChartSelector();
+          // Load trades
+          await get().tradesSelector();
+          // Load my open orders
+          // await get().getMyOpenOrders();
+          // Load my filled orders
+          // await get().getMyFilledOrders();
+          // Load my events
+          await get().getMyEvents();
+
+          set(
+            (state) => {
+              state.isLoadingExchange = false;
+            },
+            false,
+            "Exchange_Loaded"
+          );
+        } catch (error) {
+          set(
+            (state) => {
+              state.isLoadingExchange = false;
+            },
+            false,
+            "Exchange_Loading_failed"
+          );
+        }
       },
     }))
   )
