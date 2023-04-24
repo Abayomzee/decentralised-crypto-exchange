@@ -17,6 +17,7 @@ import CustomSelect from "../CustomSelect";
 import { KovanNetwork, Localhost } from "Components/Atom/Svgs";
 import Spinner from "Components/Atom/Spinners";
 import config from "config.json";
+import NoNetwork from "Components/Organisms/NoNetwork";
 
 // Types
 interface NetworkOptionProps {
@@ -40,13 +41,6 @@ const TopBar: React.FC<Props> = () => {
       icon: <></>,
     },
     {
-      value: "0x7A69",
-      label: "Localhost",
-      id: "0x7A69",
-      chainId: "31337",
-      icon: <Localhost />,
-    },
-    {
       value: "0x5",
       label: "Goerli test network",
       id: "0x5",
@@ -67,7 +61,15 @@ const TopBar: React.FC<Props> = () => {
       chainId: "80001",
       icon: <PolygonNetwork />,
     },
+    {
+      value: "0x7A69",
+      label: "Localhost",
+      id: "0x7A69",
+      chainId: "31337",
+      icon: <Localhost />,
+    },
   ];
+
   const configData = JSON.parse(JSON.stringify(config));
 
   // State
@@ -77,6 +79,12 @@ const TopBar: React.FC<Props> = () => {
   // Store
   const { provider, loadAccount } = useSetup();
   const { balance, account, isLoading, chainId } = provider;
+
+  // Conditionals
+  const isNetworkAvailable = networkOptions.find(
+    (network) => network.chainId.toString() === chainId.toString()
+  );
+  console.log({ isNetworkAvailable });
 
   //   Methods
   const loadAccountOnChange = () => {
@@ -90,7 +98,6 @@ const TopBar: React.FC<Props> = () => {
     });
   };
   const networkHandler = async (network: NetworkOptionProps) => {
-    console.log({ network });
     if (network?.id && network.label !== selected) {
       try {
         await window.ethereum.request({
@@ -125,60 +132,63 @@ const TopBar: React.FC<Props> = () => {
 
   // Data to render
   return (
-    <Wrapper className="mb-80">
-      <NetworkSelector>
-        <EthIcon />
-        {chainId && (
-          <CustomSelect
-            value={selected}
-            onOptionChange={networkHandler}
-            options={networkOptions}
-          />
-        )}
-      </NetworkSelector>
-      <AccountWrapper className="ml-auto">
-        <Balance className="paragraph-1">
-          <small className="small">My Balance </small>
-          {balance ? `${Number(balance).toFixed(4)} ETH` : "0 ETH"}
-        </Balance>
-        <Account className={account ? "" : "p-0"}>
-          {account ? (
-            <a
-              href={
-                configData[chainId]
-                  ? `${configData[chainId].explorerURL}/address/${account}`
-                  : "#"
-              }
-              target="_blank"
-              rel="noreferrer"
-            >
-              <Typography
-                as="p"
-                className="paragraph-1"
-                text={
-                  account
-                    ? `${account.slice(0, 5)}...${account.slice(38, 42)}`
-                    : ""
-                }
-              />
-              <Blockies
-                seed={account}
-                size={10}
-                scale={3}
-                className="identicon"
-              />
-            </a>
-          ) : (
-            <Button
-              className="btn btn-1 btn-full"
-              onClick={() => loadAccount()}
-            >
-              {isLoading ? <Spinner /> : "Connect"}
-            </Button>
+    <>
+      <Wrapper className="mb-80">
+        <NetworkSelector>
+          <EthIcon />
+          {chainId && (
+            <CustomSelect
+              value={selected}
+              onOptionChange={networkHandler}
+              options={networkOptions}
+            />
           )}
-        </Account>
-      </AccountWrapper>
-    </Wrapper>
+        </NetworkSelector>
+        <AccountWrapper className="ml-auto">
+          <Balance className="paragraph-1">
+            <small className="small">My Balance </small>
+            {balance ? `${Number(balance).toFixed(4)} ETH` : "0 ETH"}
+          </Balance>
+          <Account className={account ? "" : "p-0"}>
+            {account ? (
+              <a
+                href={
+                  configData[chainId]
+                    ? `${configData[chainId].explorerURL}/address/${account}`
+                    : "#"
+                }
+                target="_blank"
+                rel="noreferrer"
+              >
+                <Typography
+                  as="p"
+                  className="paragraph-1"
+                  text={
+                    account
+                      ? `${account.slice(0, 5)}...${account.slice(38, 42)}`
+                      : ""
+                  }
+                />
+                <Blockies
+                  seed={account}
+                  size={10}
+                  scale={3}
+                  className="identicon"
+                />
+              </a>
+            ) : (
+              <Button
+                className="btn btn-1 btn-full"
+                onClick={() => loadAccount()}
+              >
+                {isLoading ? <Spinner /> : "Connect"}
+              </Button>
+            )}
+          </Account>
+        </AccountWrapper>
+      </Wrapper>
+      {!isNetworkAvailable && <NoNetwork />}
+    </>
   );
 };
 

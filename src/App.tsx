@@ -25,7 +25,15 @@ function App() {
   }, []);
 
   // Data to render
-  return <>{isEthereumEnabled ? <Dashboard /> : <ConnectWallet />}</>;
+  return (
+    <>
+      {isEthereumEnabled ? (
+        <Dashboard />
+      ) : (
+        <ConnectWallet isEthereumEnabled={isEthereumEnabled} />
+      )}
+    </>
+  );
 }
 
 export default memo(App);

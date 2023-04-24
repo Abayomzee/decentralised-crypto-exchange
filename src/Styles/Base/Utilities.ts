@@ -275,7 +275,7 @@ export const Utilities = css`
   .max-width-480 {
     max-width: 48rem;
   }
-  .max-width-220px {
+  .max-width-220 {
     max-width: 22rem;
   }
   .max-width-120 {

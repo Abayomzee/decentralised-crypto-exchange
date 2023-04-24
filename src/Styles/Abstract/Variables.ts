@@ -25,11 +25,11 @@ export const Variables = css`
     --color-10: #25ce85;
     --color-11: #f45353;
     --color-12: #6469c5;
+    --color-13: #4d4d4d;
+    --color-14: #bdbdbd;
+    --color-15: #e82929;
+    --color-16: #2992f3;
     /*  */
-    --color-13: #0d1b28;
-    --color-14: #949494;
-    --color-15: #efefef;
-    --color-16: #737373;
     --color-17: #d7d7d7;
     --color-18: #f21e1e;
     --color-19: #e8e8e8;
