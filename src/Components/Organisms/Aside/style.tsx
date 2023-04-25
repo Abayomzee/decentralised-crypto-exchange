@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { motion } from "framer-motion";
+import { responsive } from "Styles/Abstract/Breakpoints";
 
 export const Wrapper = styled(motion.aside)`
   position: sticky;
@@ -7,8 +8,15 @@ export const Wrapper = styled(motion.aside)`
   height: 100vh;
   overflow-y: auto;
   background-color: var(--color-1);
-  flex-basis: 40rem;
+  flex-basis: 39rem;
   padding: 3.5rem 1.5rem 2.5rem;
+
+  ${responsive(
+    "md",
+    `
+  display: none;
+  `
+  )}
 `;
 
 export const MarketSelector = styled(motion.div)`
