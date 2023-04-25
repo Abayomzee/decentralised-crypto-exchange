@@ -57,7 +57,7 @@ const ConnectWallet: React.FC<Props> = (props) => {
             <Typography as="span" className="paragraph-5" text="Coinbase" />
           </a> */}
 
-          <Button className="btn-full btn-2 mt-40" onClick={handlePageReload}>
+          <Button className="btn-full btn-2 mt-20" onClick={handlePageReload}>
             Load Excahnge
           </Button>
 

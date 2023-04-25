@@ -14,9 +14,12 @@ export const Wrapper = styled.main`
 `;
 
 export const Container = styled.section`
-  width: 60rem;
+  flex-basis: 55rem;
   position: relative;
-  padding-top: 8rem;
+  padding-top: 5rem;
+
+  display: flex;
+  justify-content: center;
 
   .glass-card {
     /* margin-top: 9rem; */
@@ -32,8 +35,8 @@ export const Container = styled.section`
   .card {
     position: absolute;
     /* top: 7rem; */
-    width: 70%;
-    left: 15%;
+    max-width: 40rem;
+    /* left: 15%; */
     transform: translateY(7rem);
 
     background-color: var(--color-white);
