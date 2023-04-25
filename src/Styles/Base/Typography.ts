@@ -47,8 +47,8 @@ export const Typography = css`
       color: var(--color-white);
     }
     &-7 {
-      font-weight: 500;
-      font-size: 2.2rem;
+      font-weight: 400;
+      font-size: 1.6rem;
       line-height: 4.2rem;
 
       color: #222222;

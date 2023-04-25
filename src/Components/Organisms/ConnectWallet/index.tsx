@@ -29,7 +29,7 @@ const ConnectWallet: React.FC<Props> = (props) => {
           <Typography
             as="h4"
             className="text-center heading-7 mt-20 mb-20"
-            text="Install wallet"
+            text="Install wallet or a web3 browser"
           />
 
           {!isEthereumEnabled && (
