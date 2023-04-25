@@ -26,7 +26,7 @@ const Aside: React.FC<Props> = (props) => {
     <Wrapper {...props}>
       <Flex flexRowJcBetweenAiCenter>
         <Logo />
-        <FaTimes color="#ffffff" onClick={closeMenuBar} />
+        {closeMenuBar && <FaTimes color="#ffffff" onClick={closeMenuBar} />}
       </Flex>
       <Markets />
       <Balance />
