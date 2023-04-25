@@ -17,6 +17,13 @@ export const Wrapper = styled(motion.aside)`
   display: none;
   `
   )}
+
+  &.side-menu {
+    z-index: 500;
+    width: 95vw;
+    display: block;
+    position: fixed;
+  }
 `;
 
 export const MarketSelector = styled(motion.div)`

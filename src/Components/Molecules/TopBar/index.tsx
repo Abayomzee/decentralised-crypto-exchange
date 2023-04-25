@@ -6,6 +6,7 @@ import {
   Account,
   Balance,
   NetworkSelector,
+  MenuBar,
 } from "./style";
 //
 import Typography from "Components/Atom/Typography";
@@ -18,6 +19,9 @@ import { KovanNetwork, Localhost } from "Components/Atom/Svgs";
 import Spinner from "Components/Atom/Spinners";
 import config from "config.json";
 import NoNetwork from "Components/Organisms/NoNetwork";
+import Aside from "Components/Organisms/Aside";
+import { AnimatePresence } from "framer-motion";
+import { animate_slideRight } from "Styles/Base/Animation";
 
 // Types
 interface NetworkOptionProps {
@@ -76,6 +80,8 @@ const TopBar: React.FC<Props> = () => {
   const [selected, setSelected] = useState<string>(
     `${networkOptions[0].label}`
   );
+  const [showMenu, setShowMenu] = useState(false);
+
   // Store
   const { provider, loadAccount } = useSetup();
   const { balance, account, isLoading, chainId } = provider;
@@ -134,6 +140,11 @@ const TopBar: React.FC<Props> = () => {
   return (
     <>
       <Wrapper className="mb-80">
+        <MenuBar onClick={() => setShowMenu(!showMenu)}>
+          <span></span>
+          <span></span>
+          <span></span>
+        </MenuBar>
         <NetworkSelector>
           <EthIcon />
           {chainId && (
@@ -144,7 +155,7 @@ const TopBar: React.FC<Props> = () => {
             />
           )}
         </NetworkSelector>
-        <AccountWrapper className="ml-auto">
+        <AccountWrapper>
           <Balance className="paragraph-1">
             <small className="small">My Balance </small>
             {balance ? `${Number(balance).toFixed(4)} ETH` : "0 ETH"}
@@ -188,6 +199,19 @@ const TopBar: React.FC<Props> = () => {
         </AccountWrapper>
       </Wrapper>
       {!isNetworkAvailable && <NoNetwork />}
+      <AnimatePresence>
+        {showMenu && (
+          <Aside
+            variants={animate_slideRight.variants}
+            exit={animate_slideRight.variants.hidden}
+            transition={animate_slideRight.transition}
+            initial="hidden"
+            animate={showMenu ? "visible" : "hidden"}
+            className="display-block side-menu"
+            closeMenuBar={() => setShowMenu(false)}
+          />
+        )}
+      </AnimatePresence>
     </>
   );
 };

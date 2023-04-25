@@ -47,7 +47,7 @@ const ConnectWallet: React.FC<Props> = (props) => {
             <Typography as="span" className="paragraph-5" text="MetaMask" />
           </a>
 
-          <a
+          {/* <a
             href="https://www.coinbase.com/wallet/downloads"
             target="_blank"
             rel="noreferrer"
@@ -55,7 +55,7 @@ const ConnectWallet: React.FC<Props> = (props) => {
           >
             <img src="/assets/images/coinbase-logo.png" alt="" />
             <Typography as="span" className="paragraph-5" text="Coinbase" />
-          </a>
+          </a> */}
 
           <Button className="btn-full btn-2 mt-40" onClick={handlePageReload}>
             Load Excahnge

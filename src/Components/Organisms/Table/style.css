@@ -17,7 +17,7 @@
     width: 120%;
   }
 }
-@media only screen and (max-width: 900px) {
+/* @media only screen and (max-width: 900px) {
   .table {
     width: 150%;
   }
@@ -31,12 +31,12 @@
   .table {
     width: 220%;
   }
-}
-@media only screen and (max-width: 360px) {
+} */
+/* @media only screen and (max-width: 360px) {
   .table {
     width: 130%;
   }
-}
+} */
 
 .table-row {
   transition: 0.4s;
