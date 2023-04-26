@@ -3,6 +3,9 @@ import ReactDOM from "react-dom/client";
 import { GlobalStyle } from "Styles/GlobalStyles";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
+import Notiflix from "notiflix";
+
+Notiflix.Notify.init({ position: "right-top" });
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement

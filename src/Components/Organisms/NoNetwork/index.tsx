@@ -4,6 +4,7 @@ import Typography from "Components/Atom/Typography";
 import { Container, Wrapper, AvailableNetworks } from "./style";
 import useSetup from "Store/setup";
 import { getEnv } from "app-config";
+import Notiflix from "notiflix";
 
 interface Props {}
 const NoNetwork: React.FC<Props> = () => {
@@ -19,6 +20,9 @@ const NoNetwork: React.FC<Props> = () => {
         params: [{ chainId: networkId }],
       });
     } catch {
+      Notiflix.Notify.failure(
+        "Error while changing network, try using the metamask app directly"
+      );
       console.log("Error while changing network");
     }
   };
