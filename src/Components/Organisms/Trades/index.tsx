@@ -4,6 +4,8 @@ import { Wrapper } from "./style";
 import useSetup from "Store/setup";
 import TradesTable from "../Table/Tables/TradesTable";
 import EmptyState from "Components/Atom/EmptyState";
+import { Flex } from "Styles/layouts/Flex";
+import { RiErrorWarningLine } from "react-icons/ri";
 
 // Types
 interface Props {}
@@ -36,7 +38,7 @@ const Trades: React.FC<Props> = () => {
   // Effects
   useEffect(
     () => {
-      tradesSelector( );
+      tradesSelector();
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [transferInProgress]
@@ -45,7 +47,15 @@ const Trades: React.FC<Props> = () => {
   // Data to render
   return (
     <Wrapper>
-      <Typography as="h6" className="heading-5 mb-30" text="Trades" />
+      <Flex gap="1rem" className="mb-30" flexRowAiCenter>
+        <Typography as="h6" className="heading-5" text="Trades" />
+        <Flex gap=".4rem" flexRowAiCenter>
+          <RiErrorWarningLine fontSize="1.2rem" color="#707070" />
+          <Typography as="span" className="paragraph-4" text="My trades" />
+        </Flex>
+      </Flex>
+
+      {/* <Typography as="h6" className="heading-5 mb-30" text="Trades" /> */}
       {data && data.length ? (
         <TradesTable
           head={tableHead}

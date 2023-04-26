@@ -60,7 +60,7 @@ const OrderBook: React.FC<Props> = () => {
               <Flex gap="1rem" flexRowAiCenter>
                 <Typography as="h6" className="heading-6" text="Selling" />
                 <Flex gap=".4rem" flexRowAiCenter>
-                  <RiErrorWarningLine color="#707070" />
+                  <RiErrorWarningLine fontSize="1.2rem" color="#707070" />
                   <Typography
                     as="span"
                     className="paragraph-4"
@@ -87,7 +87,7 @@ const OrderBook: React.FC<Props> = () => {
               <Flex gap="1rem" flexRowAiCenter>
                 <Typography as="h6" className="heading-6" text="Buying" />
                 <Flex gap=".4rem" flexRowAiCenter>
-                  <RiErrorWarningLine color="#707070" />
+                  <RiErrorWarningLine fontSize="1.2rem" color="#707070" />
                   <Typography
                     as="span"
                     className="paragraph-4"

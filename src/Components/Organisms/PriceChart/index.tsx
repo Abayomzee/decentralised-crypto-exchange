@@ -7,6 +7,7 @@ import { options } from "./config";
 import { Flex } from "Styles/layouts/Flex";
 import { DownArrow, UpArrow } from "Components/Atom/Svgs";
 import EmptyState from "Components/Atom/EmptyState";
+import { RiErrorWarningLine } from "react-icons/ri";
 
 // Types
 interface Props {}
@@ -32,7 +33,7 @@ const PriceChart: React.FC<Props> = () => {
   // Data to render
   return (
     <Wrapper className="mb-30">
-      <Flex className="mb-30" gap="1.5rem" flexRowAiCenter>
+      <Flex gap="1.5rem" flexRowAiCenter>
         <Typography
           as="h6"
           className="heading-5"
@@ -40,6 +41,14 @@ const PriceChart: React.FC<Props> = () => {
         />
         {lastPriceChangeStatus === "+" ? <UpArrow /> : <DownArrow />}
         <Typography as="span" className="paragraph-1" text={lastPrice} />
+      </Flex>
+      <Flex className="mb-30 mt-10" gap=".4rem" flexRowAiCenter>
+        <RiErrorWarningLine fontSize="1.2rem" color="#707070" />
+        <Typography
+          as="span"
+          className="paragraph-4"
+          text="Exchange order price chart"
+        />
       </Flex>
       {account ? (
         <>

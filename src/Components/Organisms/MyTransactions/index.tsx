@@ -5,6 +5,7 @@ import useSetup from "Store/setup";
 import TradesTable from "../Table/Tables/TradesTable";
 import EmptyState from "Components/Atom/EmptyState";
 import { Flex } from "Styles/layouts/Flex";
+import { RiErrorWarningLine } from "react-icons/ri";
 
 // Types
 interface Props {}
@@ -71,7 +72,18 @@ const MyTransactions: React.FC<Props> = () => {
         className="mb-30 position-sticky-top-0"
         flexRowJcBetweenAiCenter
       >
-        <Typography as="h6" className="heading-5" text="Transactions" />
+        <Flex gap="1rem" flexRowAiCenter>
+          <Typography as="h6" className="heading-5" text="Transactions" />
+          <Flex gap=".4rem" flexRowAiCenter>
+            <RiErrorWarningLine fontSize="1.2rem" color="#707070" />
+            <Typography
+              as="span"
+              className="paragraph-4"
+              text="My transactions"
+            />
+          </Flex>
+        </Flex>
+        {/* <Typography as="h6" className="heading-5" text="Transactions" /> */}
         <TabNavs>
           <TabNav onClick={() => setTab("Orders")} active={tab === "Orders"}>
             Orders
