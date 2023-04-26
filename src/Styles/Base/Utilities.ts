@@ -220,6 +220,9 @@ export const Utilities = css`
     justify-content: flex-end;
     align-self: flex-end;
   }
+  .flex-wrap {
+    justify-wrap: wrap;
+  }
   .flex-align-center {
     display: flex;
     align-items: center;

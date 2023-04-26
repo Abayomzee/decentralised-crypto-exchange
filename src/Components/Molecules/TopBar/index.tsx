@@ -22,6 +22,8 @@ import NoNetwork from "Components/Organisms/NoNetwork";
 import Aside from "Components/Organisms/Aside";
 import { AnimatePresence } from "framer-motion";
 import { animate_slideRight } from "Styles/Base/Animation";
+import Notiflix from "notiflix";
+import { getEnv } from "app-config";
 
 // Types
 interface NetworkOptionProps {
@@ -36,7 +38,9 @@ interface Props {}
 // Main component
 const TopBar: React.FC<Props> = () => {
   // Variables
-  const networkOptions = [
+  const isLocalEnv = getEnv() === "local";
+
+  const localNetworkOprions = [
     {
       value: "",
       label: "Select a network",
@@ -73,6 +77,39 @@ const TopBar: React.FC<Props> = () => {
       icon: <Localhost />,
     },
   ];
+
+  const liveNetworkOprions = [
+    {
+      value: "",
+      label: "Select a network",
+      id: "",
+      chainId: "",
+      icon: <></>,
+    },
+    {
+      value: "0x5",
+      label: "Goerli test network",
+      id: "0x5",
+      chainId: "5",
+      icon: <KovanNetwork />,
+    },
+    {
+      value: "0xAA36A7",
+      label: "Sepolia test network",
+      id: "0xAA36A7",
+      chainId: "11155111",
+      icon: <SepoliaNetwork />,
+    },
+    {
+      value: "0x13881",
+      label: "Polygon Mumbai",
+      id: "0x13881",
+      chainId: "80001",
+      icon: <PolygonNetwork />,
+    },
+  ];
+
+  const networkOptions = isLocalEnv ? localNetworkOprions : liveNetworkOprions;
 
   const configData = JSON.parse(JSON.stringify(config));
 
@@ -111,6 +148,9 @@ const TopBar: React.FC<Props> = () => {
           params: [{ chainId: network.id }],
         });
       } catch {
+        Notiflix.Notify.failure(
+          "Error while changing network, try using the metamask app directly"
+        );
         console.log("Error while changing network");
       }
     }

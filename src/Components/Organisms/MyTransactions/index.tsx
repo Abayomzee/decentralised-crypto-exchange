@@ -72,7 +72,7 @@ const MyTransactions: React.FC<Props> = () => {
         className="mb-30 position-sticky-top-0"
         flexRowJcBetweenAiCenter
       >
-        <Flex gap="1rem" flexRowAiCenter>
+        <Flex gap="1rem" className="flex-wrap" flexRowAiCenter>
           <Typography as="h6" className="heading-5" text="Transactions" />
           <Flex gap=".4rem" flexRowAiCenter>
             <RiErrorWarningLine fontSize="1.2rem" color="#707070" />
