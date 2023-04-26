@@ -5,6 +5,8 @@ import SellingOrdersTable from "Components/Organisms/Table/Tables/SellingOrdersT
 import BuyingOrdersTable from "Components/Organisms/Table/Tables/BuyingOrdersTable";
 import useSetup from "Store/setup";
 import EmptyState from "Components/Atom/EmptyState";
+import { Flex } from "Styles/layouts/Flex";
+import { RiErrorWarningLine } from "react-icons/ri";
 
 // Types
 interface Props {}
@@ -55,7 +57,17 @@ const OrderBook: React.FC<Props> = () => {
         <OrderTypeCard>
           {sellOrders && sellOrders.length ? (
             <>
-              <Typography as="h6" className="heading-6" text="Selling" />
+              <Flex gap="1rem" flexRowAiCenter>
+                <Typography as="h6" className="heading-6" text="Selling" />
+                <Flex gap=".4rem" flexRowAiCenter>
+                  <RiErrorWarningLine color="#707070" />
+                  <Typography
+                    as="span"
+                    className="paragraph-4"
+                    text="Click on order row to fill order"
+                  />
+                </Flex>
+              </Flex>
               <SellingOrdersTable
                 head={tableHead}
                 data={sellOrders}
@@ -72,7 +84,17 @@ const OrderBook: React.FC<Props> = () => {
         <OrderTypeCard>
           {buyOrders && buyOrders.length ? (
             <>
-              <Typography as="h6" className="heading-6" text="Buying" />
+              <Flex gap="1rem" flexRowAiCenter>
+                <Typography as="h6" className="heading-6" text="Buying" />
+                <Flex gap=".4rem" flexRowAiCenter>
+                  <RiErrorWarningLine color="#707070" />
+                  <Typography
+                    as="span"
+                    className="paragraph-4"
+                    text="Click on order row to fill order"
+                  />
+                </Flex>
+              </Flex>
               <BuyingOrdersTable
                 head={tableHead}
                 data={buyOrders}

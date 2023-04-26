@@ -107,5 +107,11 @@ export const Typography = css`
       line-height: 160%;
       color: var(--color-white);
     }
+    &-9 {
+      font-weight: 500;
+      font-size: 1.3rem;
+      line-height: 160%;
+      color: var(--color-white);
+    }
   }
 `;
