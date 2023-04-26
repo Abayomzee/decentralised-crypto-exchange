@@ -78,7 +78,7 @@ const OrderBook: React.FC<Props> = () => {
               />
             </>
           ) : (
-            <EmptyState text="No orders found" />
+            <EmptyState text="No sell orders found" />
           )}
         </OrderTypeCard>
         <OrderTypeCard>
@@ -105,7 +105,7 @@ const OrderBook: React.FC<Props> = () => {
               />
             </>
           ) : (
-            <EmptyState text="No orders found" />
+            <EmptyState text="No buy orders found" />
           )}
         </OrderTypeCard>
       </OrderTypesWrapper>
