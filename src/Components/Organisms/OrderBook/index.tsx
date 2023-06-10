@@ -72,8 +72,7 @@ const OrderBook: React.FC<Props> = () => {
                 head={tableHead}
                 data={sellOrders}
                 columns={tableColumns}
-                columnWithColor="tokenPrice"
-                columnColorPropName="orderTypeClass"
+                columnWithColor="tokenPrice"                columnColorPropName="orderTypeClass"
                 onRowClick={fillOrder}
               />
             </>

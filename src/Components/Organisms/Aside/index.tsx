@@ -29,8 +29,8 @@ const Aside: React.FC<Props> = (props) => {
         {closeMenuBar && <FaTimes color="#ffffff" onClick={closeMenuBar} />}
       </Flex>
       <Markets />
-      <Balance />
       <Order />
+      <Balance />
     </Wrapper>
   );
 };
