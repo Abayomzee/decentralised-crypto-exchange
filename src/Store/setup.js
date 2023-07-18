@@ -82,6 +82,7 @@ const useSetup = create(
       loadProvider: () => {
         const provider = { ...get().provider };
         const connection = new ethers.providers.Web3Provider(window.ethereum);
+
         provider.connection = connection;
         set({ provider }, false, "Provider_Loaded");
         return connection;
