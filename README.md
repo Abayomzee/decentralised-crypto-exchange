@@ -11,7 +11,7 @@ According to the image below, there are about three(3) different entities on the
 <img src="./public/assets/images/how-exchange-works.png" alt="drawing" style="width:600px; height: 400"/>
 
 
-#### Entities in the diagram
+#### **Entities in the diagram**
 **Exchange**: This entity represents the exchange itself where diffrent users can trade cryptocurrencies  
 
 **Token#1**: This represents one of the token supported by the exchange  
