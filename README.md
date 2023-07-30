@@ -5,7 +5,7 @@
 ### 🟠 What does the exchange do ?
 It lets people list cryptocurrencies for sale and let other people buy the listed crypto currency that are for sale
 
-### 🟠 How does it works
+### 🟠 How does it works ?
 According to the image below, there are about three(3) different entities on the blockchain and three(3) entities outside the blockchain
 
 <img src="./public/assets/images/how-exchange-works.png" alt="drawing" style="width:600px; height: 400"/>
@@ -24,9 +24,9 @@ According to the image below, there are about three(3) different entities on the
 
 **User2(0x...002)** : This represents another user on the exchange just as ***user1*** they can as well Deposit, Withdraw, Buy or Sell available cryptocurrencies on the exchange  
 > *N.B The number of users that can operate on the exchange is unlimited, i.e it's not just limited to two(2) users as we have in the above image*  
+  
+    
+    
 
-
-
-
-
-
+## Architecture of the aplication
+<img src="./public/assets/images/bootcamp2.png" alt="drawing" style="width:800px; height: 400"/>
