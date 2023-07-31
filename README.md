@@ -8,7 +8,7 @@ It lets people list cryptocurrencies for sale and let other people buy the liste
 ### 🟠 How does it works ?
 According to the image below, there are about three(3) different entities on the blockchain and three(3) entities outside the blockchain
 
-<img src="./public/assets/images/how-exchange-works.png" alt="drawing" style="width:600px; height: 400"/>
+<img src="./public/assets/images/how-exchange-works.png" alt="drawing" style="width:600px; height: 400;"/>
 
 
 #### **Entities in the diagram**
@@ -26,7 +26,7 @@ According to the image below, there are about three(3) different entities on the
 > *N.B The number of users that can operate on the exchange is unlimited, i.e it's not just limited to two(2) users as we have in the above image*  
   
     
-    
+
 
 ## Architecture of the aplication
 <img src="./public/assets/images/bootcamp2.png" alt="drawing" style="width:800px; height: 400"/>
