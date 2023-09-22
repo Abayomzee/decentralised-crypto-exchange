@@ -6,7 +6,7 @@
 It lets people list cryptocurrencies for sale and let other people buy the listed crypto currency that are for sale
 
 ### 🟠 How does it works ?
-According to the image below, there are about three(3) different entities on the blockchain and three(3) entities outside the blockchain
+There are about three(3) different entities on the blockchain and three(3) entities outside the blockchain
 
 <img src="./public/assets/images/how-exchange-works.png" alt="drawing" style="width:600px; height: 400;"/>
 
