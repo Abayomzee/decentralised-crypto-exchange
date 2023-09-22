@@ -40,7 +40,7 @@ const CustomSelect: React.FC<Props> = (props) => {
   } = props;
 
   // Methods
-  const handleDropdownShow = (e: any) => {
+  const handleDropdownShow = (e: Event) => {
     e.stopPropagation();
     setShow(!show);
   };
@@ -50,7 +50,11 @@ const CustomSelect: React.FC<Props> = (props) => {
     <>
       {label && <Typography as="h4" className="heading-2 mb-10" text={label} />}
       {hide ? (
-        <Wrapper onClick={handleDropdownShow} dropdownwidth={dropdownwidth}>
+        <Wrapper
+          onClick={handleDropdownShow}
+          ref={dropdownRef}
+          dropdownwidth={dropdownwidth}
+        >
           <Flex gap="1rem" flexRowJcBetweenAiCenter>
             <Typography as="p" className="paragraph-3" text={value} />
             <CaretDown />
@@ -63,7 +67,6 @@ const CustomSelect: React.FC<Props> = (props) => {
                 transition={animate_slideUp.transition}
                 initial="hidden"
                 animate={show ? "visible" : "hidden"}
-                ref={dropdownRef}
                 dropdownwidth={dropdownwidth}
               >
                 {options?.map((option) => (
